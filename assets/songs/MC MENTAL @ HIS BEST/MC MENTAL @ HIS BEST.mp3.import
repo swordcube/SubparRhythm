@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/MC MENTAL @ HIS BEST.mp3-0b9d9546c3e110a1abc3e6110c3fba1f.mp3str"
+
+[deps]
+
+source_file="res://assets/songs/MC MENTAL @ HIS BEST/MC MENTAL @ HIS BEST.mp3"
+dest_files=[ "res://.import/MC MENTAL @ HIS BEST.mp3-0b9d9546c3e110a1abc3e6110c3fba1f.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

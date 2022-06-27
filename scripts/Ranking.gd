@@ -4,27 +4,27 @@ class_name Ranking
 
 const judgements:Dictionary = {
 	"marvelous": {
-		"time": 40.75,
+		"time": 22.5,
 		"score": 300,
 		"mod": 1
 	},
 	"perfect": {
-		"time": 43.5,
+		"time": 45,
 		"score": 300,
 		"mod": 0.95
 	},
 	"good": {
-		"time": 73.5,
+		"time": 90,
 		"score": 200,
 		"mod": 0.7
 	},
 	"bad": {
-		"time": 125,
+		"time": 135,
 		"score": 100,
 		"mod": 0.4
 	},
 	"trash": {
-		"time": 150,
+		"time": INF,
 		"score": 50,
 		"mod": 0,
 		"health": -4.15

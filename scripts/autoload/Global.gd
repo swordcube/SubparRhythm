@@ -1,9 +1,10 @@
 extends Node
 
-var scrollSpeed:float = 3400.0
+var scrollSpeed:float = 4000.0
 var songData:SongData = SongData.new()
 var currentSkin:String = "default"
-var songToLoad:String = "Ballistic Remaster"
+var songToLoad:String = "MC MENTAL @ HIS BEST"
+var songDifficulty:String = "challenge"
 
 var botPlay:bool = false
 
@@ -20,7 +21,10 @@ func imageFromSkin(path:String, skin:String):
 	return "res://assets/images/ui/skins/"+skin+"/"+path+".png"
 	
 func chartPath(song:String):
-	return "res://assets/songs/"+song+"/hard.src"
+	return "res://assets/songs/"+song+"/" + songDifficulty + ".src"
 	
 func chartSongPath(song:String):
-	return "res://assets/songs/"+song+"/music.ogg"
+	if File.new().file_exists("res://assets/songs/"+song+"/music.mp3"):
+		return "res://assets/songs/"+song+"/music.mp3"
+	else:
+		return "res://assets/songs/"+song+"/music.ogg"
