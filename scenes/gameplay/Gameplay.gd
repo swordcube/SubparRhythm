@@ -55,6 +55,9 @@ var startedSong:bool = false
 onready var music = $Music
 	
 func _process(delta):
+	if Input.is_action_just_pressed("ui_cancel"):
+		SceneManager.switchScene("menus/SongSelect")
+		
 	TimeManager.position += (delta*1000.0)*Global.songSpeed
 	# resync music if it goes off sync
 	if not died:

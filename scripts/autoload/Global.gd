@@ -4,10 +4,42 @@ var songSpeed:float = 1
 var scrollSpeed:float = 3400.0
 var songData:SongData = SongData.new()
 var currentSkin:String = "default"
-var songToLoad:String = "MC MENTAL @ HIS BEST"
-var songDifficulty:String = "challenge"
+var songToLoad:String = "Ballistic Remaster"
+var songDifficulty:String = "hard"
 
 var botPlay:bool = false
+
+func listFilesInDirectory(path):
+	var files = []
+	var dir = Directory.new()
+	dir.open(path)
+	dir.list_dir_begin()
+
+	while true:
+		var file = dir.get_next()
+		if file == "":
+			break
+		elif not file.begins_with("."):
+			files.append(file)
+
+	dir.list_dir_end()
+
+	return files
+
+func imagePath(path:String):
+	var f = File.new()
+	var realPath:String = "res://assets/images"+path
+	var imageExts:PoolStringArray = [
+		".jpg",
+		".jpeg",
+		".png",
+	]
+	
+	for ext in imageExts:
+		if f.file_exists(realPath+ext):
+			return realPath+ext
+			
+	return ""
 
 func pathFromCurSkin(path:String):
 	return "res://scenes/ui/skins/"+currentSkin+"/"+path
