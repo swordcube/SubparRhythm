@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/fonts/main.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://scenes/tools/FNFtoSRC.gd" type="Script" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+size = 32
+font_data = ExtResource( 1 )
+
+[node name="FNF to SRC" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = 288.0
+margin_top = 94.0
+margin_right = 961.0
+margin_bottom = 140.0
+custom_fonts/font = SubResource( 1 )
+text = "FNF to SRC (Subpar Rhythm Chart) converter
+
+Press ACCEPT to choose a file"
+align = 1
+
+[node name="Label2" type="Label" parent="."]
+margin_left = 288.0
+margin_top = 422.0
+margin_right = 961.0
+margin_bottom = 468.0
+custom_fonts/font = SubResource( 1 )
+text = "Status: Waiting for file.."
+align = 1
+
+[node name="FileDialog" type="FileDialog" parent="."]
+margin_left = 178.0
+margin_top = 114.0
+margin_right = 983.0
+margin_bottom = 530.0
+window_title = "Open a File"
+resizable = true
+mode = 0
+current_dir = "res://assets/songs"
+current_path = "res://assets/songs/"
+
+[connection signal="file_selected" from="FileDialog" to="." method="_on_FileDialog_file_selected"]

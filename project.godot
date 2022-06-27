@@ -1,0 +1,87 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Node2D",
+"class": "BaseScene",
+"language": "GDScript",
+"path": "res://scenes/base/BaseScene.gd"
+}, {
+"base": "Node",
+"class": "Ranking",
+"language": "GDScript",
+"path": "res://scripts/Ranking.gd"
+}, {
+"base": "Resource",
+"class": "SongData",
+"language": "GDScript",
+"path": "res://resources/SongData.gd"
+}, {
+"base": "Node2D",
+"class": "UIElements",
+"language": "GDScript",
+"path": "res://scripts/UIElements.gd"
+} ]
+_global_script_class_icons={
+"BaseScene": "",
+"Ranking": "",
+"SongData": "",
+"UIElements": ""
+}
+
+[application]
+
+config/name="Subpar Rhythm"
+config/icon="res://icon.png"
+
+[autoload]
+
+Global="*res://scripts/autoload/Global.gd"
+TimeManager="*res://scripts/autoload/TimeManager.gd"
+Transition="*res://scenes/ui/transition/Transition.tscn"
+SceneManager="*res://scripts/autoload/SceneManager.gd"
+
+[display]
+
+window/size/width=1280
+window/size/height=720
+window/stretch/mode="2d"
+window/stretch/aspect="keep"
+
+[input]
+
+bind_0={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+bind_1={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":70,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+bind_2={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":74,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+bind_3={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":75,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"
