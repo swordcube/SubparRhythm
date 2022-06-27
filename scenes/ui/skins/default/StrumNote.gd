@@ -51,6 +51,8 @@ func _process(delta):
 				UI.healthBar.healthLossMult = 1
 				
 				var rating:String = Ranking.judgeNote(note.notePosition)
+				if Global.botPlay:
+					rating = Ranking.judgements.keys()[0]
 				gameplay.rating.texture = load(Global.imageFromCurSkin(rating))
 				gameplay.rating.bop()
 				

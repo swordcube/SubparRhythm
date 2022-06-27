@@ -47,12 +47,14 @@ func _ready():
 	
 	TimeManager.position = -2000
 	
+	Global.scrollSpeed /= Global.songSpeed
+	
 var startedSong:bool = false
 
 onready var music = $Music
 	
 func _process(delta):
-	TimeManager.position += delta*1000.0
+	TimeManager.position += (delta*1000.0)*Global.songSpeed
 	# resync music if it goes off sync
 	if not died:
 		if TimeManager.position >= (music.get_playback_position()*1000.0) + 30:
@@ -61,6 +63,7 @@ func _process(delta):
 	if TimeManager.position >= 0 and not startedSong:
 		startedSong = true
 		music.stream = load(Global.chartSongPath(Global.songToLoad))
+		music.pitch_scale = Global.songSpeed
 		music.play(0.0)
 		TimeManager.position = 0
 		
@@ -75,7 +78,7 @@ func _process(delta):
 			var notePosition:float = float(note[1])
 			var sustainLength:float = float(note[2])
 			
-			if TimeManager.position > notePosition - 500:
+			if TimeManager.position > notePosition - (300/(Global.scrollSpeed/1000.0))*Global.songSpeed:
 				var newNote = load(Global.pathFromCurSkin("Note.tscn")).instance()
 				newNote.direction = direction
 				newNote.notePosition = notePosition

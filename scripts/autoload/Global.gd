@@ -1,5 +1,6 @@
 extends Node
 
+var songSpeed:float = 1.0
 var scrollSpeed:float = 3400.0
 var songData:SongData = SongData.new()
 var currentSkin:String = "default"
