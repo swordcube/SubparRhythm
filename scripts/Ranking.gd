@@ -27,7 +27,7 @@ const judgements:Dictionary = {
 		"time": INF,
 		"score": 50,
 		"mod": 0,
-		"health": -4.15
+		"health": -8.15
 	}
 }
 

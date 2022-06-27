@@ -15,6 +15,9 @@ var totalNotes:int = 0
 onready var rating = $Rating
 
 func _ready():
+	Global.songSpeed = clamp(Global.songSpeed, 0.5, 3.0)
+	Global.scrollSpeed = clamp(Global.scrollSpeed, 1000.0, 5000.0)
+	
 	randomize()
 	var f = File.new()
 	var error = f.open(Global.chartPath(Global.songToLoad), File.READ)
@@ -52,7 +55,7 @@ var startedSong:bool = false
 onready var music = $Music
 	
 func _process(delta):
-	TimeManager.position += delta*1000.0
+	TimeManager.position += (delta*1000.0)*Global.songSpeed
 	# resync music if it goes off sync
 	if not died:
 		if TimeManager.position >= (music.get_playback_position()*1000.0) + 30:
@@ -61,6 +64,7 @@ func _process(delta):
 	if TimeManager.position >= 0 and not startedSong:
 		startedSong = true
 		music.stream = load(Global.chartSongPath(Global.songToLoad))
+		music.pitch_scale = Global.songSpeed
 		music.play(0.0)
 		TimeManager.position = 0
 		
@@ -75,7 +79,9 @@ func _process(delta):
 			var notePosition:float = float(note[1])
 			var sustainLength:float = float(note[2])
 			
-			if TimeManager.position > notePosition - 500:
+			var spawnRadius:float = (1500/(Global.scrollSpeed/1000.0))*Global.songSpeed
+			
+			if not died and TimeManager.position > notePosition - spawnRadius:
 				var newNote = load(Global.pathFromCurSkin("Note.tscn")).instance()
 				newNote.direction = direction
 				newNote.notePosition = notePosition

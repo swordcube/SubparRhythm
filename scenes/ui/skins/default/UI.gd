@@ -17,7 +17,7 @@ func _ready():
 		strums.add_child(newStrum)
 		
 func _process(delta):
-	if Input.is_action_just_pressed("ui_accept"):
+	if gameplay.died and Input.is_action_just_pressed("ui_accept"):
 		SceneManager.switchScene("gameplay/Gameplay")
 		
 	accuracy.text = str(stepify(gameplay.accuracy*100.0, 0.01))+"%"
