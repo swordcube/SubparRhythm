@@ -9,6 +9,17 @@ var songDifficulty:String = "hard"
 
 var botPlay:bool = false
 
+func getTXT(path):
+	var f = File.new()
+	var error = f.open(path, File.READ)
+	if error == OK:
+		var text = f.get_as_text()
+		f.close()
+		return text
+		
+	print("ERROR LOADING "+path+" RETURNING EMPTY STRING!")
+	return ""
+
 func listFilesInDirectory(path):
 	var files = []
 	var dir = Directory.new()
@@ -28,7 +39,7 @@ func listFilesInDirectory(path):
 
 func imagePath(path:String):
 	var f = File.new()
-	var realPath:String = "res://assets/images"+path
+	var realPath:String = path
 	var imageExts:PoolStringArray = [
 		".jpg",
 		".jpeg",

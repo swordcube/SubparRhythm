@@ -7,6 +7,9 @@
 
 [sub_resource type="DynamicFont" id=1]
 size = 32
+outline_size = 5
+outline_color = Color( 0.14902, 0.172549, 0.270588, 1 )
+use_filter = true
 font_data = ExtResource( 3 )
 
 [node name="songUI" type="Node2D"]
@@ -22,10 +25,11 @@ position = Vector2( -264, 0 )
 texture = ExtResource( 2 )
 
 [node name="Label" type="Label" parent="."]
-visible = false
+modulate = Color( 1, 1, 1, 0 )
 margin_left = -506.0
 margin_top = 24.0
-margin_right = -342.0
+margin_right = -22.0
 margin_bottom = 70.0
 custom_fonts/font = SubResource( 1 )
-text = "Song Name"
+text = "< Normal >"
+align = 2
