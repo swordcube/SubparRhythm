@@ -48,8 +48,9 @@ func _process(delta):
 							notes.remove_child(coolNote)
 							note.queue_free()
 					
-					UI.healthBar.progressBar.value += 1.5
-					UI.healthBar.healthLossMult = 1
+					if gameplay.combo >= 15:
+						UI.healthBar.progressBar.value += 1.5
+						UI.healthBar.healthLossMult = 1
 					
 					var rating:String = Ranking.judgeNote(note.notePosition)
 					if Global.botPlay:
@@ -78,7 +79,7 @@ func _process(delta):
 				
 				# you lose more health with the more notes you miss
 				# gets reset when you hit a note
-				UI.healthBar.progressBar.value -= (3.5*UI.healthBar.healthLossMult)
+				UI.healthBar.progressBar.value -= (5.5*UI.healthBar.healthLossMult)
 				UI.healthBar.healthLossMult *= 1.2
 				
 				gameplay.combo = 0
