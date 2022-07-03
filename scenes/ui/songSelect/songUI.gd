@@ -32,15 +32,18 @@ func positionUI(snap:bool = false, delta:float = 0.0):
 	var alphaLerp:float = 1 - (float(targetY != 0)*0.6)
 	
 	position.x = lerp(position.x, 1280, SubparMath.getLerpValue(0.15, delta))
+	
 	if snap:
 		if label:
 			label.modulate.a = int(targetY == 0)
+		
 		position.y = yLerp
 		scale = Vector2(scaleLerp, scaleLerp)
 		modulate.a = alphaLerp
 	else:
 		if label:
 			label.modulate.a = lerp(label.modulate.a, int(targetY == 0), SubparMath.getLerpValue(0.15, delta))
+		
 		position.y = lerp(position.y, yLerp, SubparMath.getLerpValue(0.15, delta))
 		scale = lerp(scale, Vector2(scaleLerp, scaleLerp), SubparMath.getLerpValue(0.15, delta))
 		modulate.a = lerp(modulate.a, alphaLerp, SubparMath.getLerpValue(0.15, delta))

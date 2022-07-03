@@ -14,13 +14,19 @@ var totalNotes:int = 0
 
 onready var rating = $Rating
 
+var presence_timer: Timer = Timer.new()
+
+onready var start_time: int = int(OS.get_unix_time() / 1000.0)
+
 func _ready():
 	Global.songSpeed = clamp(Global.songSpeed, 0.5, 3.0)
 	Global.scrollSpeed = clamp(Global.scrollSpeed, 1000.0, 5000.0)
 	
 	randomize()
+	
 	var f = File.new()
 	var error = f.open(Global.chartPath(Global.songToLoad), File.READ)
+	
 	if error == OK:
 		Global.songData.notes = []
 		var array:Array = f.get_as_text().split("\n")
@@ -50,19 +56,26 @@ func _ready():
 	
 	TimeManager.position = -2000
 	
+	add_child(presence_timer)
+	
+	presence_timer.start(0.5)
+# warning-ignore:return_value_discarded
+	presence_timer.connect("timeout", self, "presence_update")
+	
 var startedSong:bool = false
 
 onready var music = $Music
 	
 func _process(delta):
-	if Input.is_action_just_pressed("ui_cancel"):
+	if Input.is_action_just_pressed("song_exit"):
 		SceneManager.switchScene("menus/SongSelect")
-		
-	TimeManager.position += (delta*1000.0)*Global.songSpeed
+	
 	# resync music if it goes off sync
 	if not died:
+		TimeManager.position += (delta * 1000.0) * Global.songSpeed
+		
 		if TimeManager.position >= (music.get_playback_position()*1000.0) + 30:
-			music.seek(TimeManager.position/1000.0)
+			music.seek(TimeManager.position / 1000.0)
 		
 	if TimeManager.position >= 0 and not startedSong:
 		startedSong = true
@@ -82,7 +95,7 @@ func _process(delta):
 			var notePosition:float = float(note[1])
 			var sustainLength:float = float(note[2])
 			
-			var spawnRadius:float = (1500/(Global.scrollSpeed/1000.0))*Global.songSpeed
+			var spawnRadius:float = (1500.0 / (Global.scrollSpeed / 1000.0)) * Global.songSpeed
 			
 			if not died and TimeManager.position > notePosition - spawnRadius:
 				var newNote = load(Global.pathFromCurSkin("Note.tscn")).instance()
@@ -94,3 +107,12 @@ func _process(delta):
 				notesToSpawn.erase(note)
 			else:
 				break
+
+func presence_update():
+	if not died:
+		if music.stream:
+			Discord.update_presence("Playing " + Global.songToLoad + " (" + Global.songDifficulty + ")", "Time Left: " + Global.seconds_to_string(music.stream.get_length() - (TimeManager.position / 1000.0)))
+		else:
+			Discord.update_presence("Starting " + Global.songToLoad + " (" + Global.songDifficulty + ")")
+	else:
+		Discord.update_presence("Died playing " + Global.songToLoad + " (" + Global.songDifficulty + ")", "Time Left: " + Global.seconds_to_string(music.stream.get_length() - (TimeManager.position / 1000.0)))
