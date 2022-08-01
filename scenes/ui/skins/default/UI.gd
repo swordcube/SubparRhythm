@@ -5,6 +5,8 @@ onready var gameplay = $"../"
 onready var healthBar:Node2D = $HealthBar
 onready var strums:Node2D = $Strums
 
+onready var infoText:Label = $InfoText
+
 onready var accuracy:Label = $Accuracy
 onready var combo:Label = $Combo
 
@@ -22,6 +24,13 @@ func _process(delta):
 		
 	accuracy.text = str(stepify(gameplay.accuracy*100.0, 0.01))+"%"
 	combo.text = str(gameplay.combo)
+	
+	infoText.text = "Marvelous: "+str(Global.marvelous)+"\n"
+	infoText.text += "Perfect: "+str(Global.perfect)+"\n"
+	infoText.text += "Good: "+str(Global.good)+"\n"
+	infoText.text += "Bad: "+str(Global.bad)+"\n"
+	infoText.text += "Trash: "+str(Global.trash)+"\n"
+	infoText.text += "Misses: "+str(Global.misses)
 		
 func playerDeath():
 	$YouDied.visible = true

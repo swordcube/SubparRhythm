@@ -7,6 +7,15 @@ var currentSkin:String = "default"
 var songToLoad:String = "Example Song"
 var songDifficulty:String = "Example Difficulty"
 
+var marvelous:int = 0
+var perfect:int = 0
+var good:int = 0
+var bad:int = 0
+var trash:int = 0
+var misses:int = 0
+
+var songBackground:Texture
+
 var botPlay:bool = false
 
 var audioExtensions:Array = [".ogg", ".mp3", ".wav"]
@@ -14,6 +23,38 @@ var imageExtensions:Array = [".png", ".jpg", ".jpeg", ".webp"]
 
 func _ready() -> void:
 	Discord.init()
+	
+func loadChartBPM(song:String) -> void:
+	var f = File.new()
+	var error = f.open(Global.chartPath(song), File.READ)
+	
+	if error == OK:
+		Global.songData.notes = []
+		var array:Array = f.get_as_text().split("\n")
+		TimeManager.bpm = float(array[0].split("bpm:")[1])
+	
+func loadChart(song:String) -> void:
+	var f = File.new()
+	var error = f.open(Global.chartPath(song), File.READ)
+	
+	if error == OK:
+		Global.songData.notes = []
+		var array:Array = f.get_as_text().split("\n")
+		TimeManager.bpm = float(array[0].split("bpm:")[1])
+		array.remove(0)
+		while array.size() > 0:
+			if len(array[0]) > 0:
+				var directionToPush:int = int(array[0].split("direction:")[1])%4
+				array.remove(0)
+				var positionToPush:float = float(array[0].split("position:")[1])
+				array.remove(0)
+				var sustainTimeToPush:float = float(array[0].split("sustaintime:")[1])
+				array.remove(0)
+				Global.songData.notes.append([directionToPush, positionToPush+(AudioServer.get_output_latency() * 1000), sustainTimeToPush])
+			else:
+				array.remove(0)
+	else:
+		print("CHART COULD NOT LOAD!! LOL!!!")
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("fullscreen"):

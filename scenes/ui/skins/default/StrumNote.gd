@@ -56,6 +56,18 @@ func _process(delta):
 					if Global.botPlay:
 						rating = Ranking.judgements.keys()[0]
 						
+					match rating:
+						"marvelous":
+							Global.marvelous += 1
+						"perfect":
+							Global.perfect += 1
+						"good":
+							Global.good += 1
+						"bad":
+							Global.bad += 1
+						"trash":
+							Global.trash += 1
+						
 					gameplay.rating.texture = load(Global.imageFromCurSkin(rating))
 					gameplay.rating.bop()
 					
@@ -76,6 +88,8 @@ func _process(delta):
 			if not Global.botPlay and TimeManager.position >= note.notePosition + TimeManager.safeZoneOffset:
 				notes.remove_child(note)
 				note.queue_free()
+				
+				Global.misses += 1
 				
 				# you lose more health with the more notes you miss
 				# gets reset when you hit a note

@@ -19,32 +19,21 @@ var presence_timer: Timer = Timer.new()
 onready var start_time: int = int(OS.get_unix_time() / 1000.0)
 
 func _ready():
+	Global.marvelous = 0
+	Global.perfect = 0
+	Global.good = 0
+	Global.bad = 0
+	Global.trash = 0
+	Global.misses = 0
+	
+	$bgSprite.texture = Global.songBackground
+	
 	Global.songSpeed = clamp(Global.songSpeed, 0.5, 3.0)
 	Global.scrollSpeed = clamp(Global.scrollSpeed, 1000.0, 5000.0)
 	
 	randomize()
 	
-	var f = File.new()
-	var error = f.open(Global.chartPath(Global.songToLoad), File.READ)
-	
-	if error == OK:
-		Global.songData.notes = []
-		var array:Array = f.get_as_text().split("\n")
-		TimeManager.bpm = float(array[0].split("bpm:")[1])
-		array.remove(0)
-		while array.size() > 0:
-			if len(array[0]) > 0:
-				var directionToPush:int = int(array[0].split("direction:")[1])%4
-				array.remove(0)
-				var positionToPush:float = float(array[0].split("position:")[1])
-				array.remove(0)
-				var sustainTimeToPush:float = float(array[0].split("sustaintime:")[1])
-				array.remove(0)
-				Global.songData.notes.append([directionToPush, positionToPush+(AudioServer.get_output_latency() * 1000), sustainTimeToPush])
-			else:
-				array.remove(0)
-	else:
-		print("CHART COULD NOT LOAD!! LOL!!!")
+	Global.loadChart(Global.songToLoad)
 
 	notesToSpawn = Global.songData.notes.duplicate()
 		

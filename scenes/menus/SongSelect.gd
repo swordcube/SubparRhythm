@@ -36,7 +36,11 @@ func _ready():
 	
 	Discord.update_presence("Selecting songs")
 	
+	TimeManager.connect("beatHit", self, "beatHit")
+	
 func _process(delta):
+	TimeManager.position = music.get_playback_position()*1000.0
+	bg.scale = lerp(bg.scale, Vector2.ONE, delta * 5)
 	if Input.is_action_just_pressed("ui_up"):
 		changeSelection(-1)
 		
@@ -47,6 +51,7 @@ func _process(delta):
 		Global.songToLoad = songs.keys()[curSelected]
 		
 		var songNode = songNodes.get_child(curSelected)
+		Global.songBackground = songNode.background
 		Global.songDifficulty = songNode.difficulties[songNode.curSelected].to_lower()
 		
 		SceneManager.switchScene("gameplay/Gameplay")
@@ -106,6 +111,10 @@ func changeSelection(change:int = 0):
 	volume_tween.interpolate_property(music, "volume_db", music.volume_db, -10, 2.5)
 	volume_tween.start()
 
+	bg.modulate = Color.black
+	tween.stop_all()
+	tween.interpolate_property(bg, "modulate", bg.modulate, Color("4b4b4b"), 0.5, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+	tween.start()
 	bg.texture = songNodes.get_child(curSelected).background
 	
 	for i in songNodes.get_child_count():
@@ -114,3 +123,11 @@ func changeSelection(change:int = 0):
 	Audio.playSFX("scroll")
 	
 	Discord.update_presence("Selecting a song", "Selected: " + songs.keys()[curSelected])
+
+	Global.songDifficulty = songNodes.get_child(curSelected).difficulties[songNodes.get_child(curSelected).curSelected].to_lower()
+	Global.loadChartBPM(songs.keys()[curSelected])
+	TimeManager.changeBPM(TimeManager.bpm)
+	TimeManager.recalculateValues()
+
+func beatHit():
+	bg.scale = Vector2(1.02, 1.02)
