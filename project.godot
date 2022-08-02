@@ -147,6 +147,7 @@ Transition="*res://scenes/ui/transition/Transition.tscn"
 SceneManager="*res://scripts/autoload/SceneManager.gd"
 SubparMath="*res://scripts/autoload/SubparMath.gd"
 Audio="*res://scenes/autoload/Audio.tscn"
+FPS="*res://scenes/autoload/FPS.tscn"
 
 [display]
 
