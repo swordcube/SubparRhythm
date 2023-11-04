@@ -1,5 +1,8 @@
 class_name StepManiaFormat extends Node
 
+# Credit goes to @MaybeMaru on GitHub
+# For the original parser: https://github.com/MaybeMaru/Maru-Funkin/blob/main/source/funkin/util/song/formats/SmFormat.hx
+
 static func parse(file_path:String, difficulty:String):
 	var sm_map:PackedStringArray = FileAccess.open(file_path, FileAccess.READ).get_as_text().strip_edges().split("\n")
 	

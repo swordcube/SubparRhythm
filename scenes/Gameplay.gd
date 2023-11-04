@@ -152,6 +152,8 @@ func _physics_process(delta:float):
 		
 		var cur_bpm:float = conductor.bpm
 		var new_time:float = data.time
+		# i specifically need help adjusting "new_time"
+		# to work correctly with bpm changes
 		
 		var beat_time:float = 60.0 / cur_bpm
 		var measure_time:float = beat_time * 4.0
