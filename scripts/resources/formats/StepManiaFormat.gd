@@ -4,7 +4,13 @@ static func parse(file_path:String, difficulty:String):
 	var sm_map:PackedStringArray = FileAccess.open(file_path, FileAccess.READ).get_as_text().strip_edges().split("\n")
 	
 	var chart:Chart = Chart.new()
-	chart.bpm = float(_get_map_var(sm_map, "BPMS").split("=")[1])
+	for chunk in _get_map_var(sm_map, "BPMS").split(","):
+		var data:PackedStringArray = chunk.split("=")
+		var c:ChartBPMChange = ChartBPMChange.new()
+		c.beat = float(data[0])
+		c.new_bpm = float(data[1])
+		chart.bpm_changes.append(c)
+	
 	chart.meta.title = _get_map_var(sm_map, "TITLE")
 	chart.meta.composer = _get_map_var(sm_map, "ARTIST")
 	chart.meta.credit = _get_map_var(sm_map, "CREDIT")
@@ -18,11 +24,14 @@ static func parse(file_path:String, difficulty:String):
 		for n in notes[i]:
 			var c_note:ChartNote = ChartNote.new()
 			c_note.time = n[0]
-			c_note.lane = n[1]
+			c_note.lane = n[1] % 4
 			c_note.length = n[2]
 			c_note.type = n[3]
 			chart.notes.append(c_note)
 	
+	chart.notes.sort_custom(func(a:ChartNote, b:ChartNote):
+		return a.time < b.time
+	)
 	return chart
 
 static func _get_map_var(map:PackedStringArray, map_var:String):
@@ -105,7 +114,8 @@ static func _get_map_notes(map:PackedStringArray, bpm:float, difficulty:String):
 					"3": # Hold/Roll tail
 						pass
 					"4": # Roll head
-						pass
+						var length_steps:int = _find_sustain_length(measure_array, [l, lane])
+						sec_array.append([note_time, lane, step_crochet * steps_per_line * length_steps, 0])
 					"M": # Mine
 						sec_array.append([note_time, lane, 0.0, 1])
 					_: # No/invalid note

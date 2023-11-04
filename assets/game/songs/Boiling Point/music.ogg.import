@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bcsy7q48qr4cy"
+path="res://.godot/imported/music.ogg-7fca8a372f047b38cde458831db9753c.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/game/songs/Boiling Point/music.ogg"
+dest_files=["res://.godot/imported/music.ogg-7fca8a372f047b38cde458831db9753c.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

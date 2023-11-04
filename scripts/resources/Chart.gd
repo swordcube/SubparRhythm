@@ -1,7 +1,7 @@
 class_name Chart extends Resource
 
-@export var bpm:float = 0.0
 @export var meta:ChartMeta = ChartMeta.new()
+@export var bpm_changes:Array[ChartBPMChange] = []
 @export var notes:Array[ChartNote] = []
 @export var generated_by:String = "Subpar Rhythm Charter"
 
@@ -9,6 +9,13 @@ var _track:String
 
 static func parse(track:String, difficulty:String):
 	var file:String = "res://assets/game/songs/%s" % [track]
+	
+	## Friday Night Funkin' chart files
+	var fnf_path:String = "%s/%s" % [file, difficulty+".json"]
+	if FileAccess.file_exists(fnf_path):
+		var fnfc:Chart = FNFVanillaV1Parser.parse(fnf_path)
+		fnfc._track = track
+		return fnfc
 	
 	## StepMania chart files
 	for sm_path in [

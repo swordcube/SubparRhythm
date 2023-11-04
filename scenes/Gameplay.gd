@@ -26,20 +26,76 @@ var NOTE_OBJ:Note = load("res://scenes/game/Note.tscn").instantiate()
 @onready var song_card:Label = $SongCard
 @onready var composer_card:Label = $SongCard/ComposerCard
 
+@onready var rating_card:Label = $RatingCard
+@onready var combo_card:Label = $ComboCard
+@onready var combo_breaks_card:Label = $ComboBreaksCard
+
+@onready var misses_card:Label = $MissesCard
+@onready var accuracy_card:Label = $AccuracyCard
+@onready var average_ms_card:Label = $AverageMSCard
+
+const QUANT_VALUES:Dictionary = {
+	4: Color8(255, 56, 112),
+	8: Color8(0, 200, 255),
+	12: Color8(192, 66, 255),
+	16: Color8(0, 255, 123),
+	20: Color8(196, 196, 196),
+	24: Color8(255, 150, 234),
+	32: Color8(255, 255, 82),
+	48: Color8(170, 0, 255),
+	64: Color8(0, 255, 255),
+	192: Color8(196, 196, 196)
+}
+
 var chart:Chart
 var receptors:Array[Sprite2D] = []
 var music_started:bool = false
+var combo_breaks:int = 0
+var misses:int = 0
+
+var ratings:Dictionary = {
+	"Miss": {"ms": INF, "acc": 0.0, "color": Color("ff555f")},
+	"Horrible": {"ms": 112.0, "acc": 0.0, "color": Color("ff555f")},
+	"Bad": {"ms": 85.0, "acc": 0.3, "color": Color("ffd555")},
+	"Great": {"ms": 62.0, "acc": 0.7, "color": Color("55ff80")},
+	"Cool": {"ms": 45.0, "acc": 1.0, "color": Color("558aff")},
+	"Nice": {"ms": 25.0, "acc": 1.0, "color": Color("af55ff")},
+}
+var rating_tween:Tween
+var combo:int = 0
+var total_notes_hit:int = 0
+
+var accuracy:float:
+	get:
+		if _accuracy_total_hit == 0.0 and (total_notes_hit + misses) == 0:
+			return 0.0 
+		return _accuracy_total_hit / (total_notes_hit + misses)
+	
+var average_ms:float:
+	get:
+		if total_notes_hit == 0:
+			return 0.0
+		
+		var added_up_ms:float = 0.0
+		for ms in _ms_list:
+			added_up_ms += ms
+		
+		return added_up_ms / total_notes_hit
 
 var _pressed:Array[bool] = [false, false, false, false]
 var _latest_note:int = 0
+var _ms_list:Array[float] = []
+
+var _accuracy_total_hit:float = 0.0
+var _latest_bpm_change:int = 0
 
 func _ready():
 	song_card.position.x = 1330.0
 	
-	chart = Chart.parse("MC MENTAL @ HIS BEST", "Medium")
+	chart = Chart.parse("Boiling Point", "hard")
 	music.stream = load(Paths.sound("music", "game/songs/%s" % [chart._track]))
 	
-	conductor.bpm = chart.bpm
+	conductor.bpm = chart.bpm_changes[0].new_bpm
 	conductor.time = conductor.crochet * -5.0
 	
 	var timer:Timer = Timer.new()
@@ -60,9 +116,11 @@ func _ready():
 	
 	update_stat_cards()
 	update_volume_card()
+	update_combo_card()
 	
 func _process(delta:float):
 	conductor.time += minf(delta, 0.1) 
+	
 	if conductor.time >= 0.0 and not music_started:
 		conductor.time = 0.0
 		music_started = true
@@ -70,15 +128,15 @@ func _process(delta:float):
 		show_song_card()
 		print("Starting music...")
 	
-	note_group.position.y = 620.0 + (conductor.time * 1530.0)
+	note_group.position.y = strum_line.position.y - (conductor.time * (Settings.data.scroll_speed * 0.45 * (-1.0 if Settings.data.downscroll else 1.0)))
 	
 func _physics_process(delta:float):
-	if music_started and absf(conductor.time - (music.get_playback_position() + chart.meta.offset)) > 0.02:
+	if music_started and absf(conductor.time - (music.get_playback_position() + chart.meta.offset)) > 0.03:
 		music.seek(conductor.time - chart.meta.offset)
 	
 	while _latest_note < chart.notes.size():
 		var data:ChartNote = chart.notes[_latest_note]
-		if data.time > conductor.time + 1.5:
+		if data.time > conductor.time + (1.5 / (Settings.data.scroll_speed * 0.001)):
 			break
 		
 		# TODO: use pooling stuffs
@@ -86,19 +144,57 @@ func _physics_process(delta:float):
 		var spawned:Note = NOTE_OBJ.duplicate()
 		spawned.data = data.duplicate()
 		spawned.data.time += Settings.data.note_offset * 0.001
-		spawned.position = Vector2(receptor.position.x, spawned.data.time * (Settings.data.scroll_speed * -0.45))
+		spawned.position = Vector2(receptor.position.x, spawned.data.time * (Settings.data.scroll_speed * 0.45 * (-1.0 if Settings.data.downscroll else 1.0)))
 		spawned.rotation = receptor.rotation
+		spawned.crochet = conductor.crochet
+		
+		var quant_array:Array = QUANT_VALUES.keys()
+		
+		var cur_bpm:float = conductor.bpm
+		var new_time:float = data.time
+		
+		var beat_time:float = 60.0 / cur_bpm
+		var measure_time:float = beat_time * 4.0
+		var smallest_deviation:float = (measure_time / quant_array[quant_array.size() - 1]) * 0.001
+		
+		for quant in quant_array.size():
+			var quant_time:float = measure_time / quant_array[quant]
+			if fmod(new_time + smallest_deviation, quant_time) < smallest_deviation * 2.0:
+				spawned.modulate = QUANT_VALUES[quant_array[quant]]
+				break
+		
 		note_group.add_child(spawned)
-			
 		_latest_note += 1
+		
+	while _latest_bpm_change < chart.bpm_changes.size():
+		var data:ChartBPMChange = chart.bpm_changes[_latest_bpm_change]
+		if data.beat > conductor.beatf:
+			break
+			
+		print("Changed BPM to %s at beat %s" % [data.new_bpm, data.beat])
+		conductor.bpm = data.new_bpm
+		_latest_bpm_change += 1
 		
 	var miss_radius:float = (0.3 / (Settings.data.scroll_speed * 0.001))
 	for note in note_group.get_children():
 		if note.data.time <= conductor.time - miss_radius:
+			if combo > 0:
+				combo_breaks += 1
+				combo = -1
+			else:
+				combo -= 1
+			
+			misses += 1
+			show_rating_card(-INF, true)
+			update_combo_card()
+			
 			note.queue_free()
 	
 func _unhandled_key_input(event:InputEvent):
 	event = event as InputEventKey
+	
+	if event.keycode == KEY_F4:
+		conductor.time += 4.0
 	
 	if Input.is_action_just_pressed("volume_mute"):
 		Settings.data.muted = not Settings.data.muted
@@ -131,15 +227,61 @@ func _unhandled_key_input(event:InputEvent):
 func handle_note_input(lane:int, press:bool):
 	if press:
 		var possible_notes:Array[Node] = note_group.get_children().filter(func(n):
-			return n.data.lane == lane and n.data.time < conductor.time + 0.122
+			return n.data.lane == lane and n.data.time < conductor.time + 0.182
 		)
 		var confirm:bool = possible_notes.size() > 0
 		if confirm:
-			possible_notes[0].queue_free()
+			var note:Note = possible_notes[0]
+			var note_ms:float = (conductor.time - note.data.time) * 1000.0
+			
+			if combo < 0: combo = 0
+			combo += 1
+			
+			var rating:Dictionary = show_rating_card(note_ms)
+			_accuracy_total_hit += rating.acc
+			total_notes_hit += 1
+			_ms_list.append(note_ms)
+			
+			update_combo_card()
+			note.queue_free()
 		
 		receptors[lane].texture = RECEPTOR_CONFIRM if confirm else RECEPTOR_PRESSED
 	else:
 		receptors[lane].texture = RECEPTOR_STATIC
+
+func rating_from_ms(ms:float, miss:bool = false):
+	var cur_rating:String = "Horrible"
+	for name in ratings.keys():
+		var data:Dictionary = ratings[name]
+		if data.ms == INF and not miss:
+			continue
+		if absf(ms) <= data.ms:
+			cur_rating = name
+	return cur_rating
+
+func show_rating_card(note_ms:float, miss:bool = false):
+	if is_instance_valid(rating_tween):
+		rating_tween.stop()
+	
+	var cur_rating:String = rating_from_ms(note_ms, miss)
+	rating_card.text = "%s (%.3f%s)" % [cur_rating, note_ms, "ms"] if cur_rating != "Miss" else "Combo Lost (%s%s)" % [-combo, "x"]
+	rating_card.size.x = 0
+	rating_card.position.x = 640 - (rating_card.size.x * 0.5)
+	rating_card.modulate.a = 1.0
+	rating_card.scale = Vector2(1.05, 1.05)
+	rating_card.pivot_offset = rating_card.size * 0.5
+	
+	var rating_style:StyleBoxFlat = rating_card.get_theme_stylebox("normal") as StyleBoxFlat
+	rating_style.border_color = ratings[cur_rating].color
+	
+	rating_tween = create_tween()
+	rating_tween.set_ease(Tween.EASE_IN)
+	rating_tween.set_trans(Tween.TRANS_CIRC)
+	rating_tween.tween_property(rating_card, "scale", Vector2.ONE, 0.05)
+	rating_tween.tween_interval(0.5)
+	rating_tween.tween_property(rating_card, "modulate:a", 0.0, 0.5)
+
+	return ratings[cur_rating]
 
 func show_song_card():
 	var biggest_size:float = song_card.size.x
@@ -185,6 +327,7 @@ func update_stat_cards():
 		
 func update_volume_card():
 	volume_card.text = "Muted" if Settings.data.muted else "%s%s" % [roundf(Settings.data.volume * 100), "%"]
+	volume_card.size.x = 0
 	
 	var vol_style:StyleBoxFlat = volume_card.get_theme_stylebox("normal") as StyleBoxFlat
 	if Settings.data.muted or Settings.data.volume <= 0.0:
@@ -196,3 +339,49 @@ func update_volume_card():
 	else:
 		vol_style.border_color = Color("55ff80")
 		volume_card_icon.texture = VOLUME_FULL_ICON
+		
+func update_combo_card():
+	var display_combo:int = 0 if combo < 0 else combo
+	
+	combo_card.text = "%s%s Combo" % [display_combo, "x"]
+	combo_card.size.x = 0
+	
+	var combo_style:StyleBoxFlat = combo_card.get_theme_stylebox("normal") as StyleBoxFlat	
+	combo_style.border_color = Color("ff555f")
+	if display_combo > 19: combo_style.border_color = Color("55ff80")
+	if display_combo > 49: combo_style.border_color = Color("558aff")
+	if display_combo > 149: combo_style.border_color = Color("af55ff")
+	
+	combo_breaks_card.text = "%s Combo Breaks" % [combo_breaks]
+	combo_breaks_card.size.x = 0
+	
+	var cb_style:StyleBoxFlat = combo_breaks_card.get_theme_stylebox("normal") as StyleBoxFlat	
+	cb_style.border_color = Color("ff555f")
+	if combo_breaks == 0: cb_style.border_color = Color("af55ff")
+	if combo_breaks > 0 and combo_breaks < 15: cb_style.border_color = Color("558aff")
+	if combo_breaks > 4 and combo_breaks < 15: cb_style.border_color = Color("ffd555")
+	
+	misses_card.text = "%s Misses" % [misses]
+	misses_card.size.x = 0
+	
+	var miss_style:StyleBoxFlat = misses_card.get_theme_stylebox("normal") as StyleBoxFlat	
+	miss_style.border_color = Color("ff555f")
+	if misses == 0: miss_style.border_color = Color("af55ff")
+	if misses > 0 and misses < 35: miss_style.border_color = Color("558aff")
+	if misses > 24 and misses < 35: miss_style.border_color = Color("ffd555")
+	
+	accuracy_card.text = "%.2f%s Accuracy" % [accuracy * 100.0, "%"]
+	accuracy_card.size.x = 0
+	
+	var acc_style:StyleBoxFlat = accuracy_card.get_theme_stylebox("normal") as StyleBoxFlat	
+	acc_style.border_color = Color("ff555f")
+	if accuracy >= 0.3: acc_style.border_color = Color("55ff80")
+	if accuracy >= 0.5: acc_style.border_color = Color("ffd555")
+	if accuracy >= 0.7: acc_style.border_color = Color("558aff")
+	if accuracy >= 0.9: acc_style.border_color = Color("af55ff")
+	
+	average_ms_card.text = "%.2f%s [Average]" % [average_ms, "ms"]
+	average_ms_card.size.x = 0
+	
+	var avg_ms_style:StyleBoxFlat = average_ms_card.get_theme_stylebox("normal") as StyleBoxFlat	
+	avg_ms_style.border_color = ratings[rating_from_ms(average_ms)].color

@@ -12,3 +12,6 @@ func asset(name:String, directory:String = ""):
 
 func sound(name:String, directory:String = ""):
 	return validate_exts(asset(name, directory), [".mp3", ".ogg", ".wav"])
+
+func json(name:String, directory:String = ""):
+	return asset("%s.json" % [name], directory)

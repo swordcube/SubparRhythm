@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cm6ribqqwpp05"]
+[gd_scene load_steps=29 format=3 uid="uid://cm6ribqqwpp05"]
 
 [ext_resource type="Script" path="res://scenes/Gameplay.gd" id="1_iungb"]
 [ext_resource type="Texture2D" uid="uid://c3p2wvr3yqail" path="res://assets/game/noteskins/default/static.png" id="1_lckpn"]
@@ -8,6 +8,10 @@
 [ext_resource type="Texture2D" uid="uid://be51mximieduf" path="res://assets/game/ui/volume_full.png" id="4_kk7jt"]
 [ext_resource type="Texture2D" uid="uid://do2bt3ny56ubt" path="res://assets/game/ui/memory_icon.png" id="5_yqmkn"]
 [ext_resource type="FontFile" uid="uid://7xyb2q13p6dj" path="res://assets/fonts/montserrat/Montserrat-Bold.ttf" id="7_v3fjo"]
+[ext_resource type="Texture2D" uid="uid://b0pkshosblcdu" path="res://assets/game/ui/combo_icon.png" id="8_7oeyt"]
+[ext_resource type="Texture2D" uid="uid://b8av1xe3ceith" path="res://assets/game/ui/combo_breaks_icon.png" id="9_841hl"]
+[ext_resource type="Texture2D" uid="uid://catd3u0qo7a60" path="res://assets/game/ui/accuracy_icon.png" id="10_bylv2"]
+[ext_resource type="Texture2D" uid="uid://b6vcxdvbegyyr" path="res://assets/game/ui/clock_icon.png" id="11_a1o6f"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3rl3o"]
 bg_color = Color(0, 0, 0, 0.5)
@@ -30,7 +34,7 @@ expand_margin_top = 3.0
 expand_margin_right = 10.0
 expand_margin_bottom = 3.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_71fwu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lse4r"]
 bg_color = Color(0, 0, 0, 0.5)
 border_width_right = 8
 border_color = Color(0.333333, 1, 0.501961, 1)
@@ -38,6 +42,73 @@ expand_margin_left = 35.0
 expand_margin_top = 3.0
 expand_margin_right = 10.0
 expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gpqmg"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_right = 8
+border_color = Color(1, 0.333333, 0.372549, 1)
+expand_margin_left = 35.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8skh5"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_right = 8
+border_color = Color(1, 0.333333, 0.372549, 1)
+expand_margin_left = 35.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_pn0w8"]
+font = ExtResource("3_n0cpu")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y27ua"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_right = 8
+border_color = Color(1, 0.333333, 0.372549, 1)
+expand_margin_left = 35.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_20hkg"]
+font = ExtResource("3_n0cpu")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7o3pp"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_right = 8
+border_color = Color(1, 0.333333, 0.372549, 1)
+expand_margin_left = 35.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_al6v8"]
+font = ExtResource("3_n0cpu")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dqq1y"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_right = 8
+border_color = Color(1, 0.333333, 0.372549, 1)
+expand_margin_left = 35.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8pb1d"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_bottom = 8
+border_color = Color(0.333333, 1, 0.501961, 1)
+expand_margin_left = 10.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_87le7"]
+font = ExtResource("3_n0cpu")
+font_size = 22
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sfwrk"]
 bg_color = Color(0, 0, 0, 0.5)
@@ -127,13 +198,89 @@ offset_left = 35.0
 offset_top = 87.0
 offset_right = 135.0
 offset_bottom = 108.0
-theme_override_styles/normal = SubResource("StyleBoxFlat_71fwu")
+theme_override_styles/normal = SubResource("StyleBoxFlat_lse4r")
 text = "0mb / 0mb"
 label_settings = SubResource("LabelSettings_5vtm0")
 
 [node name="Icon" type="Sprite2D" parent="RAMCard"]
 position = Vector2(-18, 10)
 texture = ExtResource("5_yqmkn")
+
+[node name="ComboCard" type="Label" parent="."]
+offset_left = 35.0
+offset_top = 551.0
+offset_right = 127.0
+offset_bottom = 572.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_gpqmg")
+text = "0x Combo"
+label_settings = SubResource("LabelSettings_5vtm0")
+
+[node name="Icon" type="Sprite2D" parent="ComboCard"]
+position = Vector2(-18, 10)
+rotation = 1.5708
+texture = ExtResource("8_7oeyt")
+
+[node name="ComboBreaksCard" type="Label" parent="."]
+offset_left = 35.0
+offset_top = 583.0
+offset_right = 179.0
+offset_bottom = 604.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_8skh5")
+text = "0 Combo Breaks"
+label_settings = SubResource("LabelSettings_pn0w8")
+
+[node name="Icon" type="Sprite2D" parent="ComboBreaksCard"]
+position = Vector2(-18, 10)
+texture = ExtResource("9_841hl")
+
+[node name="MissesCard" type="Label" parent="."]
+offset_left = 35.0
+offset_top = 615.0
+offset_right = 113.0
+offset_bottom = 636.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_y27ua")
+text = "0 Misses"
+label_settings = SubResource("LabelSettings_20hkg")
+
+[node name="Icon" type="Sprite2D" parent="MissesCard"]
+position = Vector2(-18, 10)
+texture = ExtResource("9_841hl")
+
+[node name="AccuracyCard" type="Label" parent="."]
+offset_left = 35.0
+offset_top = 647.0
+offset_right = 148.0
+offset_bottom = 668.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_7o3pp")
+text = "0% Accuracy"
+label_settings = SubResource("LabelSettings_al6v8")
+
+[node name="Icon" type="Sprite2D" parent="AccuracyCard"]
+position = Vector2(-18, 10)
+texture = ExtResource("10_bylv2")
+
+[node name="AverageMSCard" type="Label" parent="."]
+offset_left = 35.0
+offset_top = 679.0
+offset_right = 162.0
+offset_bottom = 700.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_dqq1y")
+text = "0ms [Average]"
+label_settings = SubResource("LabelSettings_al6v8")
+
+[node name="Icon" type="Sprite2D" parent="AverageMSCard"]
+position = Vector2(-18, 10)
+texture = ExtResource("11_a1o6f")
+
+[node name="RatingCard" type="Label" parent="."]
+modulate = Color(1, 1, 1, 0)
+offset_left = 556.0
+offset_top = 342.0
+offset_right = 725.0
+offset_bottom = 378.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_8pb1d")
+text = "Nice (0.067ms)"
+label_settings = SubResource("LabelSettings_87le7")
 
 [node name="SongCard" type="Label" parent="."]
 offset_left = 1330.0
