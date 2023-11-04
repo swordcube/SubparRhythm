@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bw7u2ul3okaal"
-path="res://.godot/imported/icon.png-487276ed1e3a0c39cad0279d744ee560.ctex"
+uid="uid://msq6tmvkn5de"
+path="res://.godot/imported/bg.jpg-db954c2ae8cbc9d82fca364343cb0589.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://icon.png"
-dest_files=["res://.godot/imported/icon.png-487276ed1e3a0c39cad0279d744ee560.ctex"]
+source_file="res://assets/game/songs/MC MENTAL @ HIS BEST/bg.jpg"
+dest_files=["res://.godot/imported/bg.jpg-db954c2ae8cbc9d82fca364343cb0589.ctex"]
 
 [params]
 

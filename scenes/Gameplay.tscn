@@ -1,0 +1,156 @@
+[gd_scene load_steps=15 format=3 uid="uid://cm6ribqqwpp05"]
+
+[ext_resource type="Script" path="res://scenes/Gameplay.gd" id="1_iungb"]
+[ext_resource type="Texture2D" uid="uid://c3p2wvr3yqail" path="res://assets/game/noteskins/default/static.png" id="1_lckpn"]
+[ext_resource type="Script" path="res://scripts/autoload/Conductor.gd" id="2_bherc"]
+[ext_resource type="Texture2D" uid="uid://d36jtyn8yfsom" path="res://assets/game/ui/fps_icon.png" id="3_jbuep"]
+[ext_resource type="FontFile" uid="uid://qkxjeva7ygyc" path="res://assets/fonts/montserrat/Montserrat-SemiBold.ttf" id="3_n0cpu"]
+[ext_resource type="Texture2D" uid="uid://be51mximieduf" path="res://assets/game/ui/volume_full.png" id="4_kk7jt"]
+[ext_resource type="Texture2D" uid="uid://do2bt3ny56ubt" path="res://assets/game/ui/memory_icon.png" id="5_yqmkn"]
+[ext_resource type="FontFile" uid="uid://7xyb2q13p6dj" path="res://assets/fonts/montserrat/Montserrat-Bold.ttf" id="7_v3fjo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3rl3o"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_right = 8
+border_color = Color(0.333333, 1, 0.501961, 1)
+expand_margin_left = 35.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_5vtm0"]
+font = ExtResource("3_n0cpu")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n7s8m"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_right = 8
+border_color = Color(0.333333, 1, 0.501961, 1)
+expand_margin_left = 35.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_71fwu"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_right = 8
+border_color = Color(0.333333, 1, 0.501961, 1)
+expand_margin_left = 35.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sfwrk"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_left = 8
+border_color = Color(1, 0.333333, 0.372549, 1)
+expand_margin_left = 12.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_l11dw"]
+font = ExtResource("7_v3fjo")
+font_size = 20
+
+[node name="Gameplay" type="Node2D"]
+script = ExtResource("1_iungb")
+
+[node name="Conductor" type="Node" parent="."]
+script = ExtResource("2_bherc")
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+
+[node name="LaneUnderlay" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0.5)
+offset_left = 420.0
+offset_right = 860.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 1)
+
+[node name="StrumLine" type="Node2D" parent="."]
+position = Vector2(640, 620)
+
+[node name="1" type="Sprite2D" parent="StrumLine"]
+position = Vector2(-156, 0)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_lckpn")
+
+[node name="2" type="Sprite2D" parent="StrumLine"]
+position = Vector2(-52, 0)
+rotation = -1.5708
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_lckpn")
+
+[node name="3" type="Sprite2D" parent="StrumLine"]
+position = Vector2(52, 0)
+rotation = 1.5708
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_lckpn")
+
+[node name="4" type="Sprite2D" parent="StrumLine"]
+position = Vector2(156, 0)
+rotation = 3.14159
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_lckpn")
+
+[node name="NoteGroup" type="Node2D" parent="."]
+position = Vector2(640, 620)
+
+[node name="FPSCard" type="Label" parent="."]
+offset_left = 35.0
+offset_top = 23.0
+offset_right = 112.0
+offset_bottom = 44.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_3rl3o")
+text = "1961 FPS"
+label_settings = SubResource("LabelSettings_5vtm0")
+
+[node name="Icon" type="Sprite2D" parent="FPSCard"]
+position = Vector2(-18, 10)
+texture = ExtResource("3_jbuep")
+
+[node name="VolumeCard" type="Label" parent="."]
+offset_left = 35.0
+offset_top = 55.0
+offset_right = 85.0
+offset_bottom = 76.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_n7s8m")
+text = "100%"
+label_settings = SubResource("LabelSettings_5vtm0")
+
+[node name="Icon" type="Sprite2D" parent="VolumeCard"]
+position = Vector2(-18, 10)
+texture = ExtResource("4_kk7jt")
+
+[node name="RAMCard" type="Label" parent="."]
+offset_left = 35.0
+offset_top = 87.0
+offset_right = 135.0
+offset_bottom = 108.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_71fwu")
+text = "0mb / 0mb"
+label_settings = SubResource("LabelSettings_5vtm0")
+
+[node name="Icon" type="Sprite2D" parent="RAMCard"]
+position = Vector2(-18, 10)
+texture = ExtResource("5_yqmkn")
+
+[node name="SongCard" type="Label" parent="."]
+offset_left = 1330.0
+offset_top = 23.0
+offset_right = 1503.0
+offset_bottom = 49.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_sfwrk")
+text = "Song Name"
+label_settings = SubResource("LabelSettings_l11dw")
+horizontal_alignment = 2
+
+[node name="ComposerCard" type="Label" parent="SongCard"]
+layout_mode = 0
+offset_top = 32.0
+offset_right = 173.0
+offset_bottom = 53.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_sfwrk")
+text = "By Composer Name"
+label_settings = SubResource("LabelSettings_5vtm0")
+horizontal_alignment = 2

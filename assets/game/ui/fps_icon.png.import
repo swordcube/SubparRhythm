@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bw7u2ul3okaal"
-path="res://.godot/imported/icon.png-487276ed1e3a0c39cad0279d744ee560.ctex"
+uid="uid://d36jtyn8yfsom"
+path="res://.godot/imported/fps_icon.png-20f43342ed242833023b7aa51cf01422.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://icon.png"
-dest_files=["res://.godot/imported/icon.png-487276ed1e3a0c39cad0279d744ee560.ctex"]
+source_file="res://assets/game/ui/fps_icon.png"
+dest_files=["res://.godot/imported/fps_icon.png-20f43342ed242833023b7aa51cf01422.ctex"]
 
 [params]
 
