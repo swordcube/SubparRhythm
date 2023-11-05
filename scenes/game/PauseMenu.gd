@@ -4,6 +4,7 @@ class_name PauseMenu extends CanvasLayer
 @onready var paused_title:Label = $PausedTitle
 @onready var song_name:Label = $SongName
 @onready var options:Node2D = $Options
+@onready var scroll:AudioStreamPlayer = $Scroll
 
 var cur_selected:int = 0
 
@@ -93,6 +94,7 @@ func _unhandled_key_input(event:InputEvent):
 	if Input.is_action_just_pressed("ui_up") or Input.is_action_just_pressed("ui_down"):
 		var axis:int = int(Input.get_axis("ui_up", "ui_down"))
 		cur_selected = wrapi(cur_selected + axis, 0, options.get_child_count())
+		scroll.play()
 
 	if Input.is_action_just_pressed("ui_accept"):
 		await get_tree().create_timer(0.01).timeout

@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://fyqjxfkqsjdd"]
+[gd_scene load_steps=11 format=3 uid="uid://fyqjxfkqsjdd"]
 
 [ext_resource type="Script" path="res://scenes/game/PauseMenu.gd" id="1_ou8nk"]
 [ext_resource type="FontFile" uid="uid://7xyb2q13p6dj" path="res://assets/fonts/montserrat/Montserrat-Bold.ttf" id="2_0ml15"]
 [ext_resource type="FontFile" uid="uid://qkxjeva7ygyc" path="res://assets/fonts/montserrat/Montserrat-SemiBold.ttf" id="3_k52f8"]
+[ext_resource type="AudioStream" uid="uid://csherj2fcfvda" path="res://assets/menus/sounds/scroll.ogg" id="4_lau52"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ldwlo"]
 font = ExtResource("2_0ml15")
@@ -100,3 +101,7 @@ offset_bottom = 443.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_tundo")
 text = "Exit"
 label_settings = SubResource("LabelSettings_wilrp")
+
+[node name="Scroll" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_lau52")
+max_polyphony = 10

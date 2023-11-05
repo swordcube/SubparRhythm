@@ -83,7 +83,7 @@ var average_ms:float:
 		
 		var added_up_ms:float = 0.0
 		for ms in _ms_list:
-			added_up_ms += ms
+			added_up_ms += absf(ms)
 		
 		return added_up_ms / total_notes_hit
 
