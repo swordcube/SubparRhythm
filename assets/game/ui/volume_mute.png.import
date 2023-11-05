@@ -3,20 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bmosgrqsbr0y0"
-path="res://.godot/imported/volume_mute.png-5ac36dba7b7c16bfc63ed6dcee5b0eea.ctex"
+path.bptc="res://.godot/imported/volume_mute.png-5ac36dba7b7c16bfc63ed6dcee5b0eea.bptc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/game/ui/volume_mute.png"
-dest_files=["res://.godot/imported/volume_mute.png-5ac36dba7b7c16bfc63ed6dcee5b0eea.ctex"]
+dest_files=["res://.godot/imported/volume_mute.png-5ac36dba7b7c16bfc63ed6dcee5b0eea.bptc.ctex"]
 
 [params]
 
-compress/mode=0
-compress/high_quality=false
+compress/mode=2
+compress/high_quality=true
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0

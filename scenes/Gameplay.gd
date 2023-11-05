@@ -369,7 +369,7 @@ func update_stat_cards():
 	if m_fps < 0: m_fps = 60
 	
 	var vsync:bool = DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED
-	var max_fps:int = m_fps if vsync else Engine.max_fps
+	var max_fps:int = m_fps if vsync or Engine.max_fps == 0 else Engine.max_fps
 	
 	var cur_fps:int = Engine.get_frames_per_second()
 	var cur_ram:int = OS.get_static_memory_usage() / 1048576
@@ -384,7 +384,7 @@ func update_stat_cards():
 	if cur_ram > 511: ram_style.border_color = Color("ffd555")
 	if cur_ram > 1023: ram_style.border_color = Color("ff555f")
 	
-	fps_card.text = "%s / %s FPS" % [cur_fps, max_fps]
+	fps_card.text = "%s%s FPS" % [cur_fps, " / "+str(max_fps) if max_fps != 0 else ""]
 	ram_card.text = "%s / %s" % [String.humanize_size(OS.get_static_memory_usage()), String.humanize_size(OS.get_static_memory_peak_usage())]
 	
 	for card in [fps_card, ram_card]:

@@ -3,20 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://catd3u0qo7a60"
-path="res://.godot/imported/accuracy_icon.png-87ffaedf58127ef204769cd105eae233.ctex"
+path.bptc="res://.godot/imported/accuracy_icon.png-87ffaedf58127ef204769cd105eae233.bptc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/game/ui/accuracy_icon.png"
-dest_files=["res://.godot/imported/accuracy_icon.png-87ffaedf58127ef204769cd105eae233.ctex"]
+dest_files=["res://.godot/imported/accuracy_icon.png-87ffaedf58127ef204769cd105eae233.bptc.ctex"]
 
 [params]
 
-compress/mode=0
-compress/high_quality=false
+compress/mode=2
+compress/high_quality=true
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0

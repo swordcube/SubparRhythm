@@ -3,20 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d36jtyn8yfsom"
-path="res://.godot/imported/fps_icon.png-20f43342ed242833023b7aa51cf01422.ctex"
+path.bptc="res://.godot/imported/fps_icon.png-20f43342ed242833023b7aa51cf01422.bptc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/game/ui/fps_icon.png"
-dest_files=["res://.godot/imported/fps_icon.png-20f43342ed242833023b7aa51cf01422.ctex"]
+dest_files=["res://.godot/imported/fps_icon.png-20f43342ed242833023b7aa51cf01422.bptc.ctex"]
 
 [params]
 
-compress/mode=0
-compress/high_quality=false
+compress/mode=2
+compress/high_quality=true
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0

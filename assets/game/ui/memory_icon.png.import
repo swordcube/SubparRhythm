@@ -3,20 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://do2bt3ny56ubt"
-path="res://.godot/imported/memory_icon.png-7f6d139ee8433f01d1d1a0c432ccfa27.ctex"
+path.bptc="res://.godot/imported/memory_icon.png-7f6d139ee8433f01d1d1a0c432ccfa27.bptc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/game/ui/memory_icon.png"
-dest_files=["res://.godot/imported/memory_icon.png-7f6d139ee8433f01d1d1a0c432ccfa27.ctex"]
+dest_files=["res://.godot/imported/memory_icon.png-7f6d139ee8433f01d1d1a0c432ccfa27.bptc.ctex"]
 
 [params]
 
-compress/mode=0
-compress/high_quality=false
+compress/mode=2
+compress/high_quality=true
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0

@@ -3,20 +3,21 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://kymieav5u7lu"
-path="res://.godot/imported/volume_mid.png-96b7c7832fbc4ebd0809df1ffae8cbea.ctex"
+path.bptc="res://.godot/imported/volume_mid.png-96b7c7832fbc4ebd0809df1ffae8cbea.bptc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/game/ui/volume_mid.png"
-dest_files=["res://.godot/imported/volume_mid.png-96b7c7832fbc4ebd0809df1ffae8cbea.ctex"]
+dest_files=["res://.godot/imported/volume_mid.png-96b7c7832fbc4ebd0809df1ffae8cbea.bptc.ctex"]
 
 [params]
 
-compress/mode=0
-compress/high_quality=false
+compress/mode=2
+compress/high_quality=true
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0

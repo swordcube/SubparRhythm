@@ -171,10 +171,10 @@ position = Vector2(640, 620)
 [node name="FPSCard" type="Label" parent="."]
 offset_left = 35.0
 offset_top = 23.0
-offset_right = 112.0
+offset_right = 91.0
 offset_bottom = 44.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_3rl3o")
-text = "1961 FPS"
+text = "0 FPS"
 label_settings = SubResource("LabelSettings_5vtm0")
 
 [node name="Icon" type="Sprite2D" parent="FPSCard"]
