@@ -16,15 +16,16 @@ static func parse(file_path:String):
 	chart.meta.credit = Tools.value_from_dict(json, "credit", "???")
 	chart.meta.offset = Tools.value_from_dict(json, "offset", 0.0)
 	
-	var cur_bpm:float = chart.bpm_changes[0].new_bpm
+	var cur_change = chart.bpm_changes[0]
+	var cur_bpm:float = cur_change.new_bpm
 	var sections:Array = Tools.value_from_dict(json, "notes")
 	var beat:float = 0.0
+	var time:float = 0.0
 	if sections != null:
 		for section in sections:
 			if section == null:
 				continue
 			
-			beat += (cur_bpm / 60.0)
 			var change_bpm:bool = Tools.value_from_dict(section, "changeBPM", false)
 			var new_bpm:float = Tools.value_from_dict(section, "bpm", 0.0)
 			
@@ -32,7 +33,9 @@ static func parse(file_path:String):
 				cur_bpm = new_bpm
 				var bc:ChartBPMChange = ChartBPMChange.new()
 				bc.beat = beat
+				bc.time = time
 				bc.new_bpm = new_bpm
+				cur_change = bc
 				chart.bpm_changes.append(bc)
 			
 			var notes:Array = Tools.value_from_dict(section, "sectionNotes")
@@ -43,7 +46,14 @@ static func parse(file_path:String):
 					c.lane = int(note[1]) % 4
 					c.length = note[2]
 					c.type = 0 # for now :/
+					c.last_change = cur_change
 					chart.notes.append(c)
+				
+			var beat_length:float = Tools.value_from_dict(section, "lengthInSteps", 16) * 0.25
+			if section.has("sectionBeats"): # PSYCH ENGIN-
+				beat_length = Tools.value_from_dict(section, "sectionBeats", 4)
+			beat += beat_length
+			time += (60.0 / cur_bpm) * beat_length
 	
 	chart.notes.sort_custom(func(a:ChartNote, b:ChartNote):
 		return a.time < b.time

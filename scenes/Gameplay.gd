@@ -150,14 +150,11 @@ func _physics_process(delta:float):
 		
 		var quant_array:Array = QUANT_VALUES.keys()
 		
-		var cur_bpm:float = conductor.bpm
-		var new_time:float = data.time
-		# i specifically need help adjusting "new_time"
-		# to work correctly with bpm changes
+		var new_time:float = data.time - data.last_change.time
 		
-		var beat_time:float = 60.0 / cur_bpm
+		var beat_time:float = 60.0 / data.last_change.new_bpm
 		var measure_time:float = beat_time * 4.0
-		var smallest_deviation:float = (measure_time / quant_array[quant_array.size() - 1]) * 0.001
+		var smallest_deviation:float = measure_time / quant_array[quant_array.size() - 1]
 		
 		for quant in quant_array.size():
 			var quant_time:float = measure_time / quant_array[quant]
