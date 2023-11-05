@@ -1,4 +1,4 @@
-class_name FNFVanillaV1Parser extends Node
+class_name FNFVanillaV1Format extends Node
 
 static func parse(file_path:String):
 	var json:Dictionary = JSON.parse_string(FileAccess.open(file_path, FileAccess.READ).get_as_text())
@@ -16,7 +16,8 @@ static func parse(file_path:String):
 	chart.meta.credit = Tools.value_from_dict(json, "credit", "???")
 	chart.meta.offset = Tools.value_from_dict(json, "offset", 0.0)
 	
-	var cur_change = chart.bpm_changes[0]
+	var play_as_opponent:bool = Tools.value_from_dict(json, "playAsOpponent", false)
+	var cur_change:ChartBPMChange = chart.bpm_changes[0]
 	var cur_bpm:float = cur_change.new_bpm
 	var sections:Array = Tools.value_from_dict(json, "notes")
 	var beat:float = 0.0
@@ -41,10 +42,17 @@ static func parse(file_path:String):
 			var notes:Array = Tools.value_from_dict(section, "sectionNotes")
 			if notes != null:
 				for note in notes:
+					if note == null:
+						continue
+					
+					var cpu:bool = (int(note[1]) > 3) == Tools.value_from_dict(section, "mustHitSection", false)
+					if cpu != play_as_opponent:
+						continue
+					
 					var c:ChartNote = ChartNote.new()
 					c.time = note[0] * 0.001
 					c.lane = int(note[1]) % 4
-					c.length = note[2]
+					c.length = note[2] * 0.001
 					c.type = 0 # for now :/
 					c.last_change = cur_change
 					chart.notes.append(c)
@@ -55,7 +63,4 @@ static func parse(file_path:String):
 			beat += beat_length
 			time += (60.0 / cur_bpm) * beat_length
 	
-	chart.notes.sort_custom(func(a:ChartNote, b:ChartNote):
-		return a.time < b.time
-	)
 	return chart

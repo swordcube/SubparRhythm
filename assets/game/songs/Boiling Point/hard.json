@@ -1,5 +1,6 @@
 {
 	"song": {
+		"playAsOpponent": true,
 		"player1": "bf-lava",
 		"player2": "maroonp",
 		"notes": [

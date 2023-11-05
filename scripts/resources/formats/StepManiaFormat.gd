@@ -39,9 +39,6 @@ static func parse(file_path:String, difficulty:String):
 			c_note.last_change = n[4]
 			chart.notes.append(c_note)
 	
-	chart.notes.sort_custom(func(a:ChartNote, b:ChartNote):
-		return a.time < b.time
-	)
 	return chart
 
 static func _get_map_var(map:PackedStringArray, map_var:String):

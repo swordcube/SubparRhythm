@@ -13,7 +13,7 @@ static func parse(track:String, difficulty:String):
 	## Friday Night Funkin' chart files
 	var fnf_path:String = "%s/%s" % [file, difficulty+".json"]
 	if FileAccess.file_exists(fnf_path):
-		var fnfc:Chart = FNFVanillaV1Parser.parse(fnf_path)
+		var fnfc:Chart = FNFVanillaV1Format.parse(fnf_path)
 		fnfc._track = track
 		return fnfc
 	

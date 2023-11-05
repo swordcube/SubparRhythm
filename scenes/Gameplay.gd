@@ -90,9 +90,32 @@ var _accuracy_total_hit:float = 0.0
 var _latest_bpm_change:int = 0
 
 func _ready():
-	song_card.position.x = 1330.0
-	
 	chart = Chart.parse("Boiling Point", "hard")
+	
+	# Sort the notes
+	chart.notes.sort_custom(func(a:ChartNote, b:ChartNote):
+		return a.time < b.time
+	)
+	# Remove notes that are on top of each-other
+	var i:int = 0
+	var _last_time:float = -10
+	var _notes:Array[ChartNote] = []
+	for dir in 4:
+		_last_time = -10
+		for note in chart.notes:
+			if note.lane != dir:
+				continue
+			if absf(_last_time - note.time) > 0.002:
+				_notes.append(note)
+				i += 1
+			_last_time = note.time
+	
+	# Sort the notes (again, just in case)
+	_notes.sort_custom(func(a:ChartNote, b:ChartNote):
+		return a.time < b.time
+	)
+	chart.notes = _notes
+	
 	music.stream = load(Paths.sound("music", "game/songs/%s" % [chart._track]))
 	
 	conductor.bpm = chart.bpm_changes[0].new_bpm
@@ -113,6 +136,7 @@ func _ready():
 	
 	song_card.text = chart.meta.title
 	composer_card.text = chart.meta.composer
+	song_card.position.x = 1330.0
 	
 	update_stat_cards()
 	update_volume_card()
@@ -127,8 +151,54 @@ func _process(delta:float):
 		music.play(-chart.meta.offset)
 		show_song_card()
 		print("Starting music...")
-	
-	note_group.position.y = strum_line.position.y - (conductor.time * (Settings.data.scroll_speed * 0.45 * (-1.0 if Settings.data.downscroll else 1.0)))
+		
+	note_group.position.y = strum_line.position.y - (conductor.time * (Settings.data.scroll_speed * 0.45 * (-1.0 if Settings.data.downscroll else 1.0)))	
+		
+	var note_speed:float = Settings.data.scroll_speed * 0.001
+	var miss_radius:float = (0.3 / note_speed)
+	for note in note_group.get_children():
+		note = note as Note
+		
+		var receptor:Sprite2D = receptors[note.data.lane]
+		if note.already_hit and note._og_length > 0.0:
+			note.data.length -= delta
+			if note.data.length <= -note.crochet:
+				note.queue_free()
+			
+			if not _pressed[note.data.lane] and note.data.length > 0.05:
+				note.already_hit = false
+				note.missed = true
+				break_combo()
+			
+			note.sustain.self_modulate.a = 1.0 if (note.data.length > 0.01) else 0.0
+			note.global_position.y = receptor.global_position.y
+		
+		var sustain_size:float = ((note.data.length * 0.45 * note_speed) * 1000.0) / absf(note.sustain.scale.y)
+		note.sustain.size.y = sustain_size
+		note.tail.position.y = sustain_size + (note.tail.texture.get_height() * 0.5)
+		
+		if not note.missed and not note.already_hit and note.data.time <= conductor.time - miss_radius:
+			note.missed = true
+			break_combo()
+			
+		if note.missed and not note.already_hit and note.data.time <= conductor.time - ((0.3 + (note._og_length * 4.3)) / note_speed):
+			miss_note(note, false)
+
+func break_combo():
+	if combo > 0:
+		combo_breaks += 1
+		combo = -1
+	else:
+		combo -= 1
+	misses += 1
+	show_rating_card(-INF, true)
+	update_combo_card()
+
+func miss_note(note:Note, _break_combo:bool = true):
+	if _break_combo:
+		break_combo()
+
+	note.queue_free()
 	
 func _physics_process(delta:float):
 	if music_started and absf(conductor.time - (music.get_playback_position() + chart.meta.offset)) > 0.03:
@@ -145,13 +215,19 @@ func _physics_process(delta:float):
 		spawned.data = data.duplicate()
 		spawned.data.time += Settings.data.note_offset * 0.001
 		spawned.position = Vector2(receptor.position.x, spawned.data.time * (Settings.data.scroll_speed * 0.45 * (-1.0 if Settings.data.downscroll else 1.0)))
-		spawned.rotation = receptor.rotation
+		if spawned.data.length <= 0.05:
+			spawned.data.length = 0.0
+		spawned._og_length = spawned.data.length
+		note_group.add_child(spawned)
+		
+		spawned.sprite.rotation = receptor.rotation
 		spawned.crochet = conductor.crochet
+		spawned.sustain.visible = spawned.data.length > 0.0
+		spawned.sustain.scale.y *= -1.0 if Settings.data.downscroll else 1.0
 		
 		var quant_array:Array = QUANT_VALUES.keys()
 		
 		var new_time:float = data.time - data.last_change.time
-		
 		var beat_time:float = 60.0 / data.last_change.new_bpm
 		var measure_time:float = beat_time * 4.0
 		var smallest_deviation:float = measure_time / quant_array[quant_array.size() - 1]
@@ -162,37 +238,20 @@ func _physics_process(delta:float):
 				spawned.modulate = QUANT_VALUES[quant_array[quant]]
 				break
 		
-		note_group.add_child(spawned)
 		_latest_note += 1
 		
 	while _latest_bpm_change < chart.bpm_changes.size():
 		var data:ChartBPMChange = chart.bpm_changes[_latest_bpm_change]
 		if data.beat > conductor.beatf:
 			break
-			
-		print("Changed BPM to %s at beat %s" % [data.new_bpm, data.beat])
+		
 		conductor.bpm = data.new_bpm
 		_latest_bpm_change += 1
-		
-	var miss_radius:float = (0.3 / (Settings.data.scroll_speed * 0.001))
-	for note in note_group.get_children():
-		if note.data.time <= conductor.time - miss_radius:
-			if combo > 0:
-				combo_breaks += 1
-				combo = -1
-			else:
-				combo -= 1
-			
-			misses += 1
-			show_rating_card(-INF, true)
-			update_combo_card()
-			
-			note.queue_free()
 	
 func _unhandled_key_input(event:InputEvent):
 	event = event as InputEventKey
 	
-	if event.keycode == KEY_F4:
+	if OS.is_debug_build() and event.keycode == KEY_F4:
 		conductor.time += 4.0
 	
 	if Input.is_action_just_pressed("volume_mute"):
@@ -226,13 +285,16 @@ func _unhandled_key_input(event:InputEvent):
 func handle_note_input(lane:int, press:bool):
 	if press:
 		var possible_notes:Array[Node] = note_group.get_children().filter(func(n):
-			return n.data.lane == lane and n.data.time < conductor.time + 0.182
+			return n.data.lane == lane and n.data.time < conductor.time + 0.182 \
+				and not n.already_hit and not n.missed
 		)
 		var confirm:bool = possible_notes.size() > 0
-		if confirm:
-			var note:Note = possible_notes[0]
-			var note_ms:float = (conductor.time - note.data.time) * 1000.0
+		var note:Note = (possible_notes[0] as Note) if confirm else null
+		if confirm and not note.already_hit and not note.missed:
+			note.sprite.visible = false
+			note.already_hit = true
 			
+			var note_ms:float = (conductor.time - note.data.time) * 1000.0
 			if combo < 0: combo = 0
 			combo += 1
 			
@@ -242,7 +304,11 @@ func handle_note_input(lane:int, press:bool):
 			_ms_list.append(note_ms)
 			
 			update_combo_card()
-			note.queue_free()
+			
+			if note.data.length < 0.05:
+				note.queue_free()
+			else:
+				note.data.length -= note_ms * 0.001
 		
 		receptors[lane].texture = RECEPTOR_CONFIRM if confirm else RECEPTOR_PRESSED
 	else:
