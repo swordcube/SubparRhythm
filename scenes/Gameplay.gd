@@ -1,4 +1,4 @@
-extends Node2D
+class_name Gameplay extends Node2D
 
 const VOLUME_MUTE_ICON:Texture2D = preload("res://assets/game/ui/volume_mute.png")
 const VOLUME_MID_ICON:Texture2D = preload("res://assets/game/ui/volume_mid.png")
@@ -7,6 +7,8 @@ const VOLUME_FULL_ICON:Texture2D = preload("res://assets/game/ui/volume_full.png
 const RECEPTOR_STATIC:Texture = preload("res://assets/game/noteskins/default/static.png")
 const RECEPTOR_PRESSED:Texture = preload("res://assets/game/noteskins/default/pressed.png")
 const RECEPTOR_CONFIRM:Texture = preload("res://assets/game/noteskins/default/confirm.png")
+
+const PAUSE_MENU:PackedScene = preload("res://scenes/game/PauseMenu.tscn")
 
 var NOTE_OBJ:Note = load("res://scenes/game/Note.tscn").instantiate()
 
@@ -65,6 +67,9 @@ var rating_tween:Tween
 var combo:int = 0
 var total_notes_hit:int = 0
 
+var note_spawn_thread:Thread
+var can_spawn_notes:bool = true
+
 var accuracy:float:
 	get:
 		if _accuracy_total_hit == 0.0 and (total_notes_hit + misses) == 0:
@@ -90,7 +95,8 @@ var _accuracy_total_hit:float = 0.0
 var _latest_bpm_change:int = 0
 
 func _ready():
-	chart = Chart.parse("Boiling Point", "hard")
+	if not is_instance_valid(chart):
+		chart = Chart.parse("Boiling Point", "hard")
 	
 	# Sort the notes
 	chart.notes.sort_custom(func(a:ChartNote, b:ChartNote):
@@ -124,6 +130,7 @@ func _ready():
 	var timer:Timer = Timer.new()
 	timer.one_shot = false
 	timer.timeout.connect(update_stat_cards)
+	timer.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(timer)
 	timer.start(1.0)
 	
@@ -138,6 +145,50 @@ func _ready():
 	composer_card.text = chart.meta.composer
 	song_card.position.x = 1330.0
 	
+	note_spawn_thread = Thread.new()
+	note_spawn_thread.start(func():
+		while _latest_note < chart.notes.size():
+			if not can_spawn_notes:
+				break
+			
+			var data:ChartNote = chart.notes[_latest_note]
+			if data.time > conductor.time + (1.5 / (Settings.data.scroll_speed * 0.001)):
+				continue
+			
+			# TODO: use pooling stuffs
+			var receptor:Sprite2D = receptors[data.lane]
+			var spawned:Note = NOTE_OBJ.duplicate()
+			spawned.data = data.duplicate()
+			spawned.data.time += Settings.data.note_offset * 0.001
+			spawned.position = Vector2(-INF, -INF)
+			if spawned.data.length <= 0.05:
+				spawned.data.length = 0.0
+			spawned._og_length = spawned.data.length
+			
+			spawned.get_node("Sprite").rotation = receptor.rotation
+			spawned.crochet = conductor.crochet
+			
+			var sustain:TextureRect = spawned.get_node("Sustain")
+			sustain.visible = spawned.data.length > 0.0
+			sustain.scale.y *= -1.0 if Settings.data.downscroll else 1.0
+			
+			var quant_array:Array = QUANT_VALUES.keys()
+			
+			var new_time:float = data.time - data.last_change.time
+			var beat_time:float = 60.0 / data.last_change.new_bpm
+			var measure_time:float = beat_time * 4.0
+			var smallest_deviation:float = measure_time / quant_array[quant_array.size() - 1]
+			
+			for quant in quant_array.size():
+				var quant_time:float = measure_time / quant_array[quant]
+				if fmod(new_time + smallest_deviation, quant_time) < smallest_deviation * 2.0:
+					spawned.modulate = QUANT_VALUES[quant_array[quant]]
+					break
+			
+			_latest_note += 1
+			note_group.call_deferred("add_child", spawned)
+	)
+	
 	update_stat_cards()
 	update_volume_card()
 	update_combo_card()
@@ -151,31 +202,33 @@ func _process(delta:float):
 		music.play(-chart.meta.offset)
 		show_song_card()
 		print("Starting music...")
-		
-	note_group.position.y = strum_line.position.y - (conductor.time * (Settings.data.scroll_speed * 0.45 * (-1.0 if Settings.data.downscroll else 1.0)))	
-		
+	
 	var note_speed:float = Settings.data.scroll_speed * 0.001
 	var miss_radius:float = (0.3 / note_speed)
+	
 	for note in note_group.get_children():
 		note = note as Note
-		
 		var receptor:Sprite2D = receptors[note.data.lane]
+		note.position.x = receptor.position.x
+		note.position.y = receptor.position.y - (0.45 * (conductor.time - note.data.time) * Settings.data.scroll_speed * (-1.0 if Settings.data.downscroll else 1.0))
+		
+		var sustain_size:float = ((note.data.length * 0.45 * note_speed) * 1000.0) / absf(note.sustain.scale.y)
+		note.sustain.size.y = sustain_size
+		note.tail.position.y = sustain_size + (note.tail.texture.get_height() * 0.5)
+		
 		if note.already_hit and note._og_length > 0.0:
 			note.data.length -= delta
 			if note.data.length <= -note.crochet:
 				note.queue_free()
 			
 			if not _pressed[note.data.lane] and note.data.length > 0.05:
+				note.data.length = note._og_length
 				note.already_hit = false
 				note.missed = true
 				break_combo()
 			
 			note.sustain.self_modulate.a = 1.0 if (note.data.length > 0.01) else 0.0
 			note.global_position.y = receptor.global_position.y
-		
-		var sustain_size:float = ((note.data.length * 0.45 * note_speed) * 1000.0) / absf(note.sustain.scale.y)
-		note.sustain.size.y = sustain_size
-		note.tail.position.y = sustain_size + (note.tail.texture.get_height() * 0.5)
 		
 		if not note.missed and not note.already_hit and note.data.time <= conductor.time - miss_radius:
 			note.missed = true
@@ -203,42 +256,6 @@ func miss_note(note:Note, _break_combo:bool = true):
 func _physics_process(delta:float):
 	if music_started and absf(conductor.time - (music.get_playback_position() + chart.meta.offset)) > 0.03:
 		music.seek(conductor.time - chart.meta.offset)
-	
-	while _latest_note < chart.notes.size():
-		var data:ChartNote = chart.notes[_latest_note]
-		if data.time > conductor.time + (1.5 / (Settings.data.scroll_speed * 0.001)):
-			break
-		
-		# TODO: use pooling stuffs
-		var receptor:Sprite2D = receptors[data.lane]
-		var spawned:Note = NOTE_OBJ.duplicate()
-		spawned.data = data.duplicate()
-		spawned.data.time += Settings.data.note_offset * 0.001
-		spawned.position = Vector2(receptor.position.x, spawned.data.time * (Settings.data.scroll_speed * 0.45 * (-1.0 if Settings.data.downscroll else 1.0)))
-		if spawned.data.length <= 0.05:
-			spawned.data.length = 0.0
-		spawned._og_length = spawned.data.length
-		note_group.add_child(spawned)
-		
-		spawned.sprite.rotation = receptor.rotation
-		spawned.crochet = conductor.crochet
-		spawned.sustain.visible = spawned.data.length > 0.0
-		spawned.sustain.scale.y *= -1.0 if Settings.data.downscroll else 1.0
-		
-		var quant_array:Array = QUANT_VALUES.keys()
-		
-		var new_time:float = data.time - data.last_change.time
-		var beat_time:float = 60.0 / data.last_change.new_bpm
-		var measure_time:float = beat_time * 4.0
-		var smallest_deviation:float = measure_time / quant_array[quant_array.size() - 1]
-		
-		for quant in quant_array.size():
-			var quant_time:float = measure_time / quant_array[quant]
-			if fmod(new_time + smallest_deviation, quant_time) < smallest_deviation * 2.0:
-				spawned.modulate = QUANT_VALUES[quant_array[quant]]
-				break
-		
-		_latest_note += 1
 		
 	while _latest_bpm_change < chart.bpm_changes.size():
 		var data:ChartBPMChange = chart.bpm_changes[_latest_bpm_change]
@@ -281,6 +298,11 @@ func _unhandled_key_input(event:InputEvent):
 			else:
 				handle_note_input(i, false)
 				_pressed[i] = false
+				
+	if Input.is_action_just_pressed("pause"):
+		var pause_menu:PauseMenu = PAUSE_MENU.instantiate() as PauseMenu
+		pause_menu._chart = chart
+		add_child(pause_menu)
 
 func handle_note_input(lane:int, press:bool):
 	if press:
@@ -450,3 +472,7 @@ func update_combo_card():
 	
 	var avg_ms_style:StyleBoxFlat = average_ms_card.get_theme_stylebox("normal") as StyleBoxFlat	
 	avg_ms_style.border_color = ratings[rating_from_ms(average_ms)].color
+
+func _exit_tree():
+	can_spawn_notes = false
+	note_spawn_thread.wait_to_finish()

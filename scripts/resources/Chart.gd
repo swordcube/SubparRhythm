@@ -6,6 +6,7 @@ class_name Chart extends Resource
 @export var generated_by:String = "Subpar Rhythm Charter"
 
 var _track:String
+var _difficulty:String
 
 static func parse(track:String, difficulty:String):
 	var file:String = "res://assets/game/songs/%s" % [track]
@@ -15,6 +16,7 @@ static func parse(track:String, difficulty:String):
 	if FileAccess.file_exists(fnf_path):
 		var fnfc:Chart = FNFVanillaV1Format.parse(fnf_path)
 		fnfc._track = track
+		fnfc._difficulty = difficulty
 		return fnfc
 	
 	## StepMania chart files
@@ -29,6 +31,7 @@ static func parse(track:String, difficulty:String):
 		if FileAccess.file_exists(sm_path):
 			var smc:Chart = StepManiaFormat.parse(sm_path, difficulty)
 			smc._track = track
+			smc._difficulty = difficulty
 			return smc
 	
 	## Subpar Rhythm chart files
@@ -39,9 +42,11 @@ static func parse(track:String, difficulty:String):
 		if ResourceLoader.exists(subpar_path):
 			var sc:Chart = load(subpar_path)
 			sc._track = track
+			sc._difficulty = difficulty
 			return sc
 	
 	## Fallback chart
 	var fc:Chart = Chart.new()
 	fc._track = track
+	fc._difficulty = difficulty
 	return fc

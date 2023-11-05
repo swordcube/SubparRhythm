@@ -1,0 +1,102 @@
+[gd_scene load_steps=10 format=3 uid="uid://fyqjxfkqsjdd"]
+
+[ext_resource type="Script" path="res://scenes/game/PauseMenu.gd" id="1_ou8nk"]
+[ext_resource type="FontFile" uid="uid://7xyb2q13p6dj" path="res://assets/fonts/montserrat/Montserrat-Bold.ttf" id="2_0ml15"]
+[ext_resource type="FontFile" uid="uid://qkxjeva7ygyc" path="res://assets/fonts/montserrat/Montserrat-SemiBold.ttf" id="3_k52f8"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ldwlo"]
+font = ExtResource("2_0ml15")
+font_size = 48
+
+[sub_resource type="LabelSettings" id="LabelSettings_1tnlx"]
+font = ExtResource("2_0ml15")
+font_size = 32
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m42l8"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_left = 8
+border_color = Color(0.333333, 1, 0.584314, 1)
+expand_margin_left = 12.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_wilrp"]
+font = ExtResource("3_k52f8")
+font_size = 32
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_424fq"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_left = 8
+border_color = Color(1, 0.831373, 0.333333, 1)
+expand_margin_left = 12.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tundo"]
+bg_color = Color(0, 0, 0, 0.5)
+border_width_left = 8
+border_color = Color(1, 0.333333, 0.372549, 1)
+expand_margin_left = 12.0
+expand_margin_top = 3.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_ou8nk")
+
+[node name="BG" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
+
+[node name="PausedTitle" type="Label" parent="."]
+offset_left = 1300.0
+offset_top = 72.0
+offset_right = 1485.0
+offset_bottom = 132.0
+text = "Paused"
+label_settings = SubResource("LabelSettings_ldwlo")
+horizontal_alignment = 2
+
+[node name="SongName" type="Label" parent="."]
+offset_left = 1280.0
+offset_top = 128.0
+offset_right = 1662.0
+offset_bottom = 168.0
+text = "Song Name [Difficulty]"
+label_settings = SubResource("LabelSettings_1tnlx")
+horizontal_alignment = 2
+
+[node name="Options" type="Node2D" parent="."]
+
+[node name="Resume" type="Label" parent="Options"]
+offset_left = 860.0
+offset_top = 291.0
+offset_right = 1360.0
+offset_bottom = 331.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_m42l8")
+text = "Resume"
+label_settings = SubResource("LabelSettings_wilrp")
+
+[node name="Restart" type="Label" parent="Options"]
+offset_left = 860.0
+offset_top = 347.0
+offset_right = 1360.0
+offset_bottom = 387.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_424fq")
+text = "Restart"
+label_settings = SubResource("LabelSettings_wilrp")
+
+[node name="Exit" type="Label" parent="Options"]
+offset_left = 860.0
+offset_top = 403.0
+offset_right = 1360.0
+offset_bottom = 443.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_tundo")
+text = "Exit"
+label_settings = SubResource("LabelSettings_wilrp")

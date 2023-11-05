@@ -165,7 +165,7 @@ rotation = 3.14159
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_lckpn")
 
-[node name="NoteGroup" type="CanvasGroup" parent="."]
+[node name="NoteGroup" type="Node2D" parent="."]
 position = Vector2(640, 620)
 
 [node name="FPSCard" type="Label" parent="."]
