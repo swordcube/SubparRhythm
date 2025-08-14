@@ -1,0 +1,33 @@
+$chart;
+version=0.1.0;
+
+$meta;
+title=Test;
+artist=N/A;
+charter=swordcube;
+difficulties=Beginner,Expert;
+
+$notetypes;
+# M specifies a mine, which is set to be dangerous (less easy to hit when close to a normal note)
+M=mine,true;
+
+$timing;
+# First beat specifies 170bpm with a time sig of 4/4
+0.0=170,4/4;
+
+$notes;
+@Beginner;
+0.0=1M00;
+1.0=01M0;
+2.0=001M;
+3.0=00M1;
+
+@Expert;
+0.0=1000;
+0.5=M000;
+1.0=0100;
+1.5=0M00;
+2.0=0010;
+2.5=00M0;
+3.0=0001;
+3.5=000M;
