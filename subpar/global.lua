@@ -15,7 +15,7 @@ function Global.updateCurrentProfile()
         return
     end
     Global.currentProfile = file:replace("\r", ""):replace("\n", ""):trim()
-    print("[SUBPAR | INFO] Current profile set to: " .. Global.currentProfile)
+    SLog.verbose("Current profile set to: " .. Global.currentProfile)
 end
 
 function Global.setCurrentProfile(newProfile)

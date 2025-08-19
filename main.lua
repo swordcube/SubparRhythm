@@ -10,5 +10,5 @@ comet.init({
         dimensions = {1280, 720},
         parallelUpdate = false
     },
-    screen = require("subpar.screens.initscreen"):new()
+    screen = function() return require("subpar.screens.initscreen"):new() end
 })

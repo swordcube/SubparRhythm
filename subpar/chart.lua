@@ -233,7 +233,7 @@ function Chart.load(song, difficulty)
     end
     table.sort(chart.notes, sortNote)
     table.sort(chart.timing, sortTimingPoint)
-    print("[SUBPAR | INFO] Loaded " .. song .. " [" .. difficulty .. "] chart with " .. #chart.notes .. " notes and " .. #chart.timing .. " timing points")
+    SLog.verbose("Loaded " .. song .. " [" .. difficulty .. "] chart with " .. #chart.notes .. " notes and " .. #chart.timing .. " timing points")
     return chart
 end
 

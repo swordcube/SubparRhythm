@@ -43,7 +43,7 @@ function Settings.load()
                 end
                 Settings[key][key2] = keys
             else
-                print("[SUBPAR | INFO] Loaded " .. key2 .. " as " .. tostring(value2))
+                SLog.verbose("Loaded " .. key2 .. " as " .. tostring(value2))
                 Settings[key][key2] = value2
             end
         end

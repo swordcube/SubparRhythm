@@ -8,6 +8,7 @@ function InitScreen:__init__()
     Chart = require("subpar.chart") --- @type subpar.Chart
     Global = require("subpar.global") --- @type subpar.Global
     Settings = require("subpar.settings") --- @type subpar.Settings
+    SLog = require("subpar.utilities.log") --- @type subpar.utilities.Log
 
     Global.updateCurrentProfile()
     Settings.load()
