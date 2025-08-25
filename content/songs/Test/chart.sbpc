@@ -8,11 +8,9 @@ charter=swordcube;
 difficulties=Beginner,Expert;
 
 $notetypes;
-# M specifies a mine, which is set to be dangerous (less easy to hit when close to a normal note)
 M=mine,true;
 
 $timing;
-# First beat specifies 170bpm with a time sig of 4/4
 0.0=170,4/4;
 
 $notes;
