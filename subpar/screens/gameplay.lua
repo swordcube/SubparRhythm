@@ -17,10 +17,18 @@ end
 function GameplayScreen:enter()
     super.enter(self)
     comet.settings.bgColor = Color:new(Color.BLACK)
+    
+    local c = Conductor.instance --- @type subpar.plugins.Conductor
+    c:setupTimingPoints(self.currentChart.timing)
+    c:setCurrentTime(c:getCurrentBeatLength() * -3.0)
+
+    comet.mixer.music:setSource(Assets.getSongAudio(self.currentSong))
 
     -- TODO: allow for more keys than just 4k
 
     local skinConfig = Assets.getSkinConfig(Settings.Game.Skin)
+
+    self.startingSong = true
 
     self.camera = Camera:new() --- @type comet.gfx.Camera
     self.camera.zoom:set(1.1, 1.1)
@@ -74,6 +82,18 @@ function GameplayScreen:enter()
         t:target({target = item.position, properties = {y = item.position.y + 10}})
         t:target({target = item, properties = {alpha = 1}})
         t:start({duration = 0.5, ease = "outQuad", delay = (i * 0.1) + 0.1})
+    end
+end
+
+function GameplayScreen:update(dt)
+    super.update(self, dt)
+    local c = Conductor.instance --- @type subpar.plugins.Conductor
+    if self.startingSong and c:getCurrentTime() >= 0.0 then
+        self.startingSong = false
+        c:setCurrentTime(0.0)
+        
+        comet.mixer.music:play()
+        c.music = comet.mixer.music
     end
 end
 

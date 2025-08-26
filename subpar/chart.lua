@@ -144,7 +144,7 @@ function Chart.load(song, difficulty)
 
                     local timeSig = valueSplit[2]:split("/")
                     local timingPoint = {
-                        beat = tonumber(lineSplit[1]),
+                        time = tonumber(lineSplit[1]),
                         bpm = tonumber(valueSplit[1]),
                         timeSignature = {tonumber(timeSig[1]), tonumber(timeSig[2])}
                     }

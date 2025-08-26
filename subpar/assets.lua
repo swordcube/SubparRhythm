@@ -14,6 +14,10 @@ function Assets.getCurrentProfile()
     
 end
 
+function Assets.getContentAsset(name)
+    return Settings.Game.ContentFolder .. "/" .. name
+end
+
 function Assets.getSkinAsset(name, skin)
     skin = skin or Settings.Game.Skin or "default"
 
@@ -47,6 +51,23 @@ function Assets.getSkinFont(name, skin)
         Assets.getSkinAsset(name .. ".TTF", skin),
         Assets.getSkinAsset(name .. ".otf", skin),
         Assets.getSkinAsset(name .. ".OTF", skin)
+    }
+    for i = 1, #possiblePaths do
+        if fs.exists(possiblePaths[i]) then
+            return possiblePaths[i]
+        end
+    end
+    return possiblePaths[1] -- fallback to first path
+end
+
+function Assets.getSongAudio(name)
+    local possiblePaths = {
+        Assets.getContentAsset("songs/" .. name .. "/music.ogg"),
+        Assets.getContentAsset("songs/" .. name .. "/music.OGG"),
+        Assets.getContentAsset("songs/" .. name .. "/music.wav"),
+        Assets.getContentAsset("songs/" .. name .. "/music.WAV"),
+        Assets.getContentAsset("songs/" .. name .. "/music.mp3"),
+        Assets.getContentAsset("songs/" .. name .. "/music.MP3")
     }
     for i = 1, #possiblePaths do
         if fs.exists(possiblePaths[i]) then

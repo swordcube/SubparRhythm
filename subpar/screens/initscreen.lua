@@ -9,6 +9,12 @@ function InitScreen:__init__()
     Global = require("subpar.global") --- @type subpar.Global
     Settings = require("subpar.settings") --- @type subpar.Settings
     SLog = require("subpar.utilities.log") --- @type subpar.utilities.Log
+    Conductor = require("subpar.plugins.conductor") --- @type subpar.plugins.Conductor
+
+    local c = Conductor:new() --- @type subpar.plugins.Conductor
+    c.dispatchToScreens = true
+    Conductor.instance = c
+    comet.plugins:add(c)
 
     Global.updateCurrentProfile()
     Settings.load()
