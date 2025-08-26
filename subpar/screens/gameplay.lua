@@ -19,8 +19,9 @@ function GameplayScreen:enter()
     comet.settings.bgColor = Color:new(Color.BLACK)
     
     local c = Conductor.instance --- @type subpar.plugins.Conductor
+    c:reset(self.currentChart.timing[1].bpm, self.currentChart.timing[1].timeSignature)
     c:setupTimingPoints(self.currentChart.timing)
-    c:setCurrentTime(c:getCurrentBeatLength() * -3.0)
+    c:setCurrentTime(c:getCurrentBeatLength() * -4.0)
 
     comet.mixer.music:setSource(Assets.getSongAudio(self.currentSong))
 
