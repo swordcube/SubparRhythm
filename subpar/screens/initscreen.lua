@@ -10,6 +10,7 @@ function InitScreen:__init__()
     Settings = require("subpar.settings") --- @type subpar.Settings
     SLog = require("subpar.utilities.log") --- @type subpar.utilities.Log
     Conductor = require("subpar.plugins.conductor") --- @type subpar.plugins.Conductor
+    Scoring = require("subpar.game.scoring") --- @type subpar.game.Scoring
 
     local c = Conductor:new() --- @type subpar.plugins.Conductor
     c.dispatchToScreens = true

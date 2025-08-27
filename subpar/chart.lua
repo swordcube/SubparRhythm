@@ -34,7 +34,7 @@ function Chart.loadMeta(song, _file)
     local i = 1
     local split = string.split(file, ";")
 
-    while i < #split do
+    while i <= #split do
         local line = split[i]
         if line:startsWith("$") then
             -- parse section
@@ -43,7 +43,7 @@ function Chart.loadMeta(song, _file)
                 goto continue
             end
             i = i + 1
-            while i < #split do
+            while i <= #split do
                 line = split[i]
                 if line:startsWith("$") then
                     break
@@ -80,14 +80,14 @@ function Chart.load(song, difficulty)
     local i = 1
     local split = string.split(file, ";")
 
-    while i < #split do
+    while i <= #split do
         local line = split[i]
         if line:startsWith("$") then
             local sectionName = line:sub(2)
             if sectionName == "chart" then
                 -- parse basic chart meta (currently just version) 
                 i = i + 1
-                while i < #split do
+                while i <= #split do
                     line = split[i]
                     if line:startsWith("$") then
                         i = i - 1
@@ -103,7 +103,7 @@ function Chart.load(song, difficulty)
             elseif sectionName == "meta" then
                 -- skip past this, we loaded this earlier already
                 i = i + 1
-                while i < #split do
+                while i <= #split do
                     line = split[i]
                     if line:startsWith("$") then
                         i = i - 1
@@ -114,7 +114,7 @@ function Chart.load(song, difficulty)
             elseif sectionName == "notetypes" then
                 -- parse note types
                 i = i + 1
-                while i < #split do
+                while i <= #split do
                     line = split[i]
                     if line:startsWith("$") then
                         i = i - 1
@@ -132,7 +132,7 @@ function Chart.load(song, difficulty)
             elseif sectionName == "timing" then
                 -- parse timing points
                 i = i + 1
-                while i < #split do
+                while i <= #split do
                     line = split[i]
                     if line:startsWith("$") then
                         i = i - 1
@@ -154,7 +154,7 @@ function Chart.load(song, difficulty)
             elseif sectionName == "notes" then
                 -- parse notes
                 i = i + 1
-                while i < #split do
+                while i <= #split do
                     line = split[i]
                     if line:startsWith("$") then
                         i = i - 1
@@ -165,7 +165,7 @@ function Chart.load(song, difficulty)
                         if parsedDifficulty ~= difficulty then
                             i = i + 1
                             -- skip until we find the matching difficulty or we hit EOF
-                            while i < #split do
+                            while i <= #split do
                                 local stop = false
                                 line = split[i]
 
@@ -188,7 +188,7 @@ function Chart.load(song, difficulty)
                         end
                         -- start parsing notes for this difficulty
                         i = i + 1 -- skip the line containing the difficulty
-                        while i < #split do
+                        while i <= #split do
                             line = split[i]
                             if line:startsWith("$") or line:startsWith("@") then
                                 -- stop if EOF or we hit another difficulty

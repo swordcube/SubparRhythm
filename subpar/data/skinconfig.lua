@@ -16,6 +16,10 @@ local SkinConfig = {
         Strums = {}, --- @type string[]
         PressStrums = {}, --- @type string[]
         HitStrums = {}, --- @type string[]
+
+        Notes = {}, --- @type string[]
+        Holds = {}, --- @type string[]
+        Tails = {}, --- @type string[]
     }
 }
 return SkinConfig

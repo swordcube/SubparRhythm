@@ -114,7 +114,7 @@ function Conductor:setCurrentTime(t)
 end
 
 function Conductor:getCurrentPlayhead()
-    return self.rawPlayhead - self.offset
+    return self._rawPlayhead - self.offset
 end
 
 function Conductor:reset(bpm, timeSignature)
@@ -144,7 +144,7 @@ function Conductor:reset(bpm, timeSignature)
     self.curDecMeasure = -1.0
 
     self._rawTime = 0.0
-    self.rawPlayhead = 0.0
+    self._rawPlayhead = 0.0
 
     self._lastPlayhead = -999999999.0
 end

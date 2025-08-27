@@ -1,8 +1,15 @@
+local NoteGroup = require("subpar.game.notegroup") --- @type subpar.game.NoteGroup
+
 --- @class subpar.game.Strum : comet.gfx.Image
 local Strum, super = Image:subclass("Strum")
 
 function Strum:__init__(skin, keyCount, lane)
     super.__init__(self)
+
+    self.strumLine = nil --- @type subpar.game.StrumLine
+
+    self.notes = NoteGroup:new(0, 0, skin, keyCount) --- @type subpar.game.NoteGroup
+    self:addChild(self.notes)
 
     self.skin = skin
     self.keyCount = keyCount

@@ -31,6 +31,9 @@ function GameplayScreen:enter()
 
     self.startingSong = true
 
+    --- @protected
+    self._score = 0
+
     self.camera = Camera:new() --- @type comet.gfx.Camera
     self.camera.zoom:set(1.1, 1.1)
     self:addChild(self.camera)
@@ -51,6 +54,7 @@ function GameplayScreen:enter()
     
     self.strumLine = StrumLine:new(4) --- @type subpar.game.StrumLine
     self.strumLine.position:set(comet.getDesiredWidth() / 2, comet.getDesiredHeight() * 0.85)
+    self.strumLine.notesToSpawn = self.currentChart.notes
     self.camera:addChild(self.strumLine)
 
     self.scoreLabel = Label:new() --- @type comet.gfx.Label
@@ -84,6 +88,26 @@ function GameplayScreen:enter()
         t:target({target = item, properties = {alpha = 1}})
         t:start({duration = 0.5, ease = "outQuad", delay = (i * 0.1) + 0.1})
     end
+end
+
+function GameplayScreen:getScore()
+    return self._score
+end
+
+function GameplayScreen:setScore(newScore)
+    self._score = newScore
+    self.scoreLabel.text = string.format("%06d", self._score)
+
+    self.scoreLabel.scale:set(1.075, 1.075)
+    Tween.cancelTweensOf(self.scoreLabel.scale)
+
+    local t = Tween:new() --- @type comet.gfx.Tween
+    t:target({target = self.scoreLabel.scale, properties = {x = 1, y = 1}})
+    t:start({duration = 0.35, ease = "outBack"})
+end
+
+function GameplayScreen:addScore(by)
+    self:setScore(self._score + by)
 end
 
 function GameplayScreen:update(dt)
