@@ -18,6 +18,7 @@ local Settings = {
     Game = {
         ContentFolder = "content",
         Skin = "default",
+        ScrollSpeed = 0.5, --- @type number
         NoteOffset = 0 --- @type number
     }
 }
@@ -25,8 +26,9 @@ Settings.defaults = table.copy(Settings, true)
 
 function Settings.load()
     --- @diagnostic disable-next-line: cast-local-type
-    Settings = table.copy(Settings.defaults, true)
-
+    for key, value in pairs(table.copy(Settings.defaults, true)) do
+        Settings[key] = value
+    end
     local file = "profiles/" .. Global.currentProfile .. "/settings.ini"
     if not love.filesystem.exists(file) then
         print("Settings doesn't exist for " .. Global.currentProfile .. " - using defaults!")
@@ -50,7 +52,7 @@ function Settings.load()
     end
 end
 
-function Settings:save()
+function Settings.save()
     local save = {}
     for key, _ in pairs(Settings) do
         save[key] = Settings[key]

@@ -24,6 +24,7 @@ function Global.setCurrentProfile(newProfile)
         error("Failed to set current profile: " .. err)
         return
     end
+    Global.currentProfile = newProfile
 end
 
 return Global

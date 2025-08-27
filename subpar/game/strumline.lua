@@ -19,7 +19,7 @@ function StrumLine:__init__(keyCount)
     self.botplay = false
 
     -- How fast the notes scroll (in seconds)
-    self.scrollSpeed = 0.5
+    self.scrollSpeed = Settings.Game.ScrollSpeed
 
     self.strums = Object2D:new() --- @type comet.gfx.Object2D
     self:addChild(self.strums)
