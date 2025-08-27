@@ -14,6 +14,7 @@ function Strum:__init__(skin, keyCount, lane)
     self.skin = skin
     self.keyCount = keyCount
     self.lane = lane
+    self.releaseTimer = 0.0
 
     local config = Assets.getSkinConfig(Settings.Game.Skin)["Notes" .. keyCount .. "K"]
     self.scale:set(config.Scale, config.Scale)
@@ -40,6 +41,16 @@ end
 
 function Strum:release()
     self:loadTexture(self.strumTexture)
+end
+
+function Strum:update(dt)
+    if self.releaseTimer > 0.0 then
+        self.releaseTimer = self.releaseTimer - (dt * 1000.0)
+        if self.releaseTimer <= 0.0 then
+            self.releaseTimer = 99999999.0
+            self:release()
+        end
+    end
 end
 
 function Strum:destroy()

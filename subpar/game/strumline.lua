@@ -16,6 +16,8 @@ function StrumLine:__init__(keyCount)
     self.notePos = 1
     self.notesToSpawn = {}
 
+    self.botplay = false
+
     -- How fast the notes scroll (in seconds)
     self.scrollSpeed = 0.5
 
@@ -72,19 +74,18 @@ function StrumLine:input(e)
                     local strum = self.strums:getChild(i) --- @type subpar.game.Strum
                     strum:press()
 
-                    local ct = Conductor.instance:getCurrentTime()
-                    local validNotes = table.filter(strum.notes.children, function(n)
-                        return math.abs(n.time - ct) < 180 and n.lane == strum.lane
-                    end)
-                    if #validNotes ~= 0 then
-                        strum:hit()
-                        table.sort(validNotes, sortNote)
-
-                        local note = validNotes[1] --- @type subpar.game.Note
-                        strum.notes:removeNote(note)
-
-                        local game = ScreenManager.instance.current --- @type subpar.screens.GameplayScreen
-                        game:addScore(Scoring.getScoreFromDiff(note.time - ct))
+                    if not self.botplay then
+                        local ct = Conductor.instance:getCurrentTime()
+                        local validNotes = table.filter(strum.notes.children, function(n)
+                            return math.abs(n.time - ct) < 180 and n.lane == strum.lane
+                        end)
+                        if #validNotes ~= 0 then
+                            strum:hit()
+                            table.sort(validNotes, sortNote)
+    
+                            local note = validNotes[1] --- @type subpar.game.Note
+                            strum.notes:hitNote(note)
+                        end
                     end
                 end
                 if not e.pressed and self.pressed[i] then

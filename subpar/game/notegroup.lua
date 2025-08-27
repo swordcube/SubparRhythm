@@ -16,14 +16,34 @@ function NoteGroup:__init__(x, y, skin, keyCount)
 end
 
 --- @param note subpar.game.Note
+function NoteGroup:hitNote(note)
+    local ct = Conductor.instance:getCurrentTime()
+    self:removeNote(note)
+
+    local strum = self.parent --- @type subpar.game.Strum
+    strum:hit()
+
+    if strum.strumLine.botplay then
+        strum.releaseTimer = 50.0
+    end
+    local game = ScreenManager.instance.current --- @type subpar.screens.GameplayScreen
+    game:addScore(Scoring.getScoreFromDiff(note.time - ct))
+end
+
+--- @param note subpar.game.Note
 function NoteGroup:updateNote(note)
     local strum = self.parent --- @type subpar.game.Strum
     local strumLine = strum.strumLine --- @type subpar.game.StrumLine
 
-    note.position.x = note:getWidth() * 0.5
-    note.position.y = ((Conductor.instance:getCurrentPlayhead() - note.time) / strumLine.scrollSpeed)
-
     local ct = Conductor.instance:getCurrentTime()
+    local ph = Conductor.instance:getCurrentPlayhead()
+
+    note.position.x = note:getWidth() * 0.5
+    note.position.y = ((ph - note.time) / strumLine.scrollSpeed) + (note:getHeight() * 0.5)
+
+    if strumLine.botplay and note.time <= ph then
+        self:hitNote(note)
+    end
     if note.time < ct - (150 / strumLine.scrollSpeed) then
         self:removeNote(note)
     end
