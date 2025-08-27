@@ -1,0 +1,10 @@
+make sure you have lua or luajit installed and just run one of the lua files with it, like this:
+luajit fnf-garfie=baby.lua
+
+you could also run it through love2d by replacing lua/luajit in the command with love
+
+then just follow the instructions that the script gives you
+make sure to run the script from this folder (open the folder in terminal)
+
+don't run lua files in the tools or utils folder, those are just helper functions
+for stuff lua doesn't natively have by default!!

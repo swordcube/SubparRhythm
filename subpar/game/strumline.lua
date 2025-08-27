@@ -64,6 +64,9 @@ end
 
 function StrumLine:input(e)
     if e.type == "key" then
+        if self.botplay then
+            return
+        end
         local binds = Settings.Input.Binds4K
         for i = 1, #binds do
             local bind = binds[i]
@@ -74,18 +77,16 @@ function StrumLine:input(e)
                     local strum = self.strums:getChild(i) --- @type subpar.game.Strum
                     strum:press()
 
-                    if not self.botplay then
-                        local ct = Conductor.instance:getCurrentTime()
-                        local validNotes = table.filter(strum.notes.children, function(n)
-                            return math.abs(n.time - ct) < 180 and n.lane == strum.lane
-                        end)
-                        if #validNotes ~= 0 then
-                            strum:hit()
-                            table.sort(validNotes, sortNote)
-    
-                            local note = validNotes[1] --- @type subpar.game.Note
-                            strum.notes:hitNote(note)
-                        end
+                    local ct = Conductor.instance:getCurrentTime()
+                    local validNotes = table.filter(strum.notes.children, function(n)
+                        return math.abs(n.time - ct) < 180 and n.lane == strum.lane
+                    end)
+                    if #validNotes ~= 0 then
+                        strum:hit()
+                        table.sort(validNotes, sortNote)
+
+                        local note = validNotes[1] --- @type subpar.game.Note
+                        strum.notes:hitNote(note)
                     end
                 end
                 if not e.pressed and self.pressed[i] then

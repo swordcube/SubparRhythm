@@ -1,0 +1,52 @@
+{
+	"song": {
+		"title": "Splooble",
+		"mixes": [],
+		"difficulties": [
+			"Expert"
+		],
+		"timingPoints": [
+			{
+				"t": 0,
+				"b": 180,
+				"ts": [
+					4,
+					4
+				]
+			}
+		],
+		"artist": "caffie",
+		"charter": "swordcube",
+		"tracks": {
+			"spectator": [],
+			"opponent": [
+				"vocals-sword"
+			],
+			"player": [
+				"vocals-bf"
+			]
+		}
+	},
+	"freeplay": {
+		"ratings": {
+			"hard": 6
+		},
+		"icon": "sword",
+		"album": "vol1"
+	},
+	"game": {
+		"characters": {
+			"opponent": "sword",
+			"spectator": "cubical_speakers",
+			"player": "bf"
+		},
+		"scrollSpeed": {
+			"hard": 3
+		},
+		"allowOpponentMode": true,
+		"stage": "stage",
+		"noteSkin": "cubical",
+		"uiSkin": "cubical",
+		"hudSkin": "cubical"
+	}
+}
