@@ -50,6 +50,11 @@ function Settings.load()
             end
         end
     end
+    Settings.applyAudio()
+end
+
+function Settings.applyAudio()
+    comet.mixer:setMasterVolume(Settings.Audio.MasterVolume)
 end
 
 function Settings.save()
