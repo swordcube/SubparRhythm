@@ -46,7 +46,7 @@ function StrumLine:__init__(keyCount)
 end
 
 function StrumLine:update(dt)
-    local spawnRange = 20 / self.scrollSpeed
+    local spawnRange = 8.0 * self.scrollSpeed
     local notesToSpawn = self.notesToSpawn
 
     while self.notePos <= #notesToSpawn and notesToSpawn[self.notePos].beat <= Conductor.instance.curBeat + spawnRange do
