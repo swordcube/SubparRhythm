@@ -24,6 +24,9 @@ function GameplayScreen:enter()
     c:setCurrentTime(c:getCurrentBeatLength() * -4.0)
 
     comet.mixer.music:setSource(Assets.getSongAudio(self.currentSong))
+    comet.mixer.music.onComplete:connect(function(_)
+        self:switchTo(require("subpar.screens.songselect"):new())
+    end)
 
     -- TODO: allow for more keys than just 4k
 
@@ -55,6 +58,7 @@ function GameplayScreen:enter()
     self.strumLine = StrumLine:new(4) --- @type subpar.game.StrumLine
     self.strumLine.position:set(comet.getDesiredWidth() / 2, comet.getDesiredHeight() * 0.85)
     self.strumLine.notesToSpawn = self.currentChart.notes
+    self.strumLine.botplay = true
     self.camera:addChild(self.strumLine)
 
     self.scoreLabel = Label:new() --- @type comet.gfx.Label
@@ -88,6 +92,17 @@ function GameplayScreen:enter()
         t:target({target = item, properties = {alpha = 1}})
         t:start({duration = 0.5, ease = "outQuad", delay = (i * 0.1) + 0.1})
     end
+    local ratingList = Scoring.getRatingList()
+    self.ratingTextures = {} --- @type comet.gfx.Texture[]
+
+    for _, rating in ipairs(ratingList) do
+        self.ratingTextures[rating] = Texture:new(Assets.getSkinImage("game/ratings/" .. rating))
+        self.ratingTextures[rating]:reference()
+    end
+    self.ratingDisplay = Image:new(self.ratingTextures[ratingList[1]]) --- @type comet.gfx.Image
+    self.ratingDisplay:screenCenter()
+    self.ratingDisplay.alpha = 0.0
+    self.camera:addChild(self.ratingDisplay)
 end
 
 function GameplayScreen:getScore()
@@ -98,8 +113,8 @@ function GameplayScreen:setScore(newScore)
     self._score = newScore
     self.scoreLabel.text = string.format("%06d", self._score)
 
-    self.scoreLabel.scale:set(1.075, 1.075)
     Tween.cancelTweensOf(self.scoreLabel.scale)
+    self.scoreLabel.scale:set(1.075, 1.075)
 
     local t = Tween:new() --- @type comet.gfx.Tween
     t:target({target = self.scoreLabel.scale, properties = {x = 1, y = 1}})
@@ -108,6 +123,24 @@ end
 
 function GameplayScreen:addScore(by)
     self:setScore(self._score + by)
+end
+
+function GameplayScreen:showHitInfo(rating, diff)
+    self.ratingDisplay:loadTexture(self.ratingTextures[rating])
+    self.ratingDisplay:screenCenter()
+    self.ratingDisplay.alpha = 1
+
+    Tween.cancelTweensOf(self.ratingDisplay)
+    Tween.cancelTweensOf(self.ratingDisplay.scale)
+    self.ratingDisplay.scale:set(1.075, 1.075)
+
+    local t = Tween:new() --- @type comet.gfx.Tween
+    t:target({target = self.ratingDisplay.scale, properties = {x = 1, y = 1}})
+    t:start({duration = 0.25, ease = "outBack"})
+
+    local t = Tween:new() --- @type comet.gfx.Tween
+    t:target({target = self.ratingDisplay, properties = {alpha = 0}})
+    t:start({delay = 0.5, duration = 0.15})
 end
 
 function GameplayScreen:update(dt)
@@ -120,6 +153,13 @@ function GameplayScreen:update(dt)
         comet.mixer.music:play()
         c.music = comet.mixer.music
     end
+end
+
+function GameplayScreen:exit()
+    for _, texture in pairs(self.ratingTextures) do
+        texture:dereference()
+    end
+    super.exit(self)
 end
 
 return GameplayScreen

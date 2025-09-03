@@ -46,15 +46,20 @@ function StrumLine:__init__(keyCount)
 end
 
 function StrumLine:update(dt)
-    local spawnRange = 8.0 * self.scrollSpeed
+    local spawnRange = 2500.0 * self.scrollSpeed
     local notesToSpawn = self.notesToSpawn
 
-    while self.notePos <= #notesToSpawn and notesToSpawn[self.notePos].beat <= Conductor.instance.curBeat + spawnRange do
+    while self.notePos <= #notesToSpawn do
         local rawNote = notesToSpawn[self.notePos]
+        local noteTime = Conductor.instance:getTimeAtBeat(rawNote.beat)
+
+        if noteTime > Conductor.instance:getCurrentTime() + spawnRange then
+            break
+        end
         local strum = self.strums:getChild(rawNote.lane) --- @type subpar.game.Strum
         -- SLog.print("Spawning note at beat " .. rawNote.beat)
 
-        local note = Note:new(strum.skin, strum.keyCount, Conductor.instance:getTimeAtBeat(rawNote.beat), strum.lane)
+        local note = Note:new(strum.skin, strum.keyCount, noteTime, strum.lane)
         note.position.y = -999999.0
         strum.notes:addChild(note)
 

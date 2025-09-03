@@ -28,6 +28,15 @@ function NoteGroup:hitNote(note)
     end
     local game = ScreenManager.instance.current --- @type subpar.screens.GameplayScreen
     game:addScore(Scoring.getScoreFromDiff(note.time - ct))
+    game:showHitInfo(Scoring.getRatingFromDiff(note.time - ct), math.truncate(note.time - ct, 3))
+end
+
+--- @param note subpar.game.Note
+function NoteGroup:missNote(note)
+    self:removeNote(note)
+
+    local game = ScreenManager.instance.current --- @type subpar.screens.GameplayScreen
+    game:showHitInfo("miss", nil)
 end
 
 --- @param note subpar.game.Note
@@ -44,8 +53,8 @@ function NoteGroup:updateNote(note)
     if strumLine.botplay and note.time <= ph then
         self:hitNote(note)
     end
-    if note.time < ct - (150 / strumLine.scrollSpeed) then
-        self:removeNote(note)
+    if note.time < ct - (250 * strumLine.scrollSpeed) then
+        self:missNote(note)
     end
 end
 
@@ -64,8 +73,8 @@ function NoteGroup:_update(dt)
     end
     for i = 1, #self.toRemove do
         local note = self.toRemove[i] --- @type subpar.game.Note
-        self:removeChild(note)
         note:destroy()
+        self:removeChild(note)
     end
     self.toRemove = {}
     self:update(dt)

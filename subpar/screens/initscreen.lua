@@ -18,7 +18,7 @@ function InitScreen:enter()
     Global.updateCurrentProfile()
     Settings.load()
 
-    ScreenManager.instance:_switchTo(require("subpar.screens.songselect"):new())
+    self:forceSwitchTo(require("subpar.screens.songselect"):new())
 end
 
 return InitScreen

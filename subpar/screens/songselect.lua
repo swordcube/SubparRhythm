@@ -27,7 +27,7 @@ function SongSelectScreen:input(e)
     if e.type == "key" then
         local e = e --- @type comet.input.InputKeyEvent
         if e.key == "return" then
-            ScreenManager.switchTo(require("subpar.screens.gameplay"):new("Splooble", "Expert"))
+            ScreenManager.switchTo(require("subpar.screens.gameplay"):new("Uranium 235", "Radioactive"))
         end
     end
 end
