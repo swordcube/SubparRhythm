@@ -45,6 +45,19 @@ function Assets.getSkinImage(name, skin)
     return possiblePaths[1] -- fallback to first path
 end
 
+function Assets.getSkinXml(name, skin)
+    local possiblePaths = {
+        Assets.getSkinAsset(name .. ".xml", skin),
+        Assets.getSkinAsset(name .. ".XML", skin)
+    }
+    for i = 1, #possiblePaths do
+        if fs.exists(possiblePaths[i]) then
+            return possiblePaths[i]
+        end
+    end
+    return possiblePaths[1] -- fallback to first path
+end
+
 function Assets.getSkinFont(name, skin)
     local possiblePaths = {
         Assets.getSkinAsset(name .. ".ttf", skin),
