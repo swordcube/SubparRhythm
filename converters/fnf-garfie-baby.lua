@@ -57,7 +57,7 @@ c:reset(timingPoints[1].bpm, timingPoints[1].timeSignature)
 c:setupTimingPoints(timingPoints)
 
 -- add note types
-local noteTypes = {}
+local noteTypes = {"Default", "SustainEnd"}
 local difficulties = meta.song.difficulties
 
 for i = 1, #difficulties do
@@ -75,7 +75,7 @@ for i = 1, #difficulties do
 end
 local possibleLetters = {"A", "a", "B", "b", "C", "c", "D", "d", "E", "e", "F", "f", "G", "g", "H", "h", "I", "i", "J", "j", "K", "k", "L", "l", "M", "m", "N", "n", "O", "o", "P", "p", "Q", "q", "R", "r", "S", "s", "T", "t", "U", "u", "V", "v", "W", "w", "X", "x", "Y", "y", "Z", "z"}
 local letterPos = 1
-local typesToLetters = {["Default"] = "1"}
+local typesToLetters = {["Default"] = "1", ["SustainEnd"] = "2"}
 
 if #noteTypes ~= 0 then
     addToOutput("\n$notetypes;")
@@ -96,12 +96,26 @@ for i = 1, #difficulties do
     addToOutput("@" .. difficulty .. ";")
     
     local notes = chart.n[difficulty]
-    table.sort(notes, function(a, b)
-        return a.t < b.t
-    end)
     local curRow = -1
     local rowStr = "0000"
 
+    local notesCopy = table.copy(notes)
+    for i = 1, #notesCopy do
+        local note = notesCopy[i]
+        if note.d < 4 or note.l <= 30.0 then
+            goto continue
+        end
+        table.insert(notes, {
+            t = note.t + note.l,
+            d = note.d,
+            k = "SustainEnd",
+            l = 0.0
+        })
+        ::continue::
+    end
+    table.sort(notes, function(a, b)
+        return a.t < b.t
+    end)
     for i = 1, #notes do
         local note = notes[i]
         if note.d < 4 then

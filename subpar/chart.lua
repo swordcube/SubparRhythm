@@ -213,7 +213,7 @@ function Chart.load(song, difficulty)
                                     local storedNote = {
                                         beat = beat,
                                         lane = j,
-                                        type = char == "1" and "default" or chart.notetypes[char].id
+                                        type = char == "1" and "Default" or chart.notetypes[char].id
                                     }
                                     -- TODO: add sustain end type which will point to the last note
                                     -- of it's lane

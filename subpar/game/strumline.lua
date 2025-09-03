@@ -59,7 +59,7 @@ function StrumLine:update(dt)
         local strum = self.strums:getChild(rawNote.lane) --- @type subpar.game.Strum
         -- SLog.print("Spawning note at beat " .. rawNote.beat)
 
-        local note = Note:new(strum.skin, strum.keyCount, noteTime, strum.lane)
+        local note = Note:new(strum.skin, strum.keyCount, noteTime, strum.lane, rawNote.type)
         note.position.y = -999999.0
         strum.notes:addChild(note)
 

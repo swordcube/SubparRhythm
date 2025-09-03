@@ -58,7 +58,6 @@ function GameplayScreen:enter()
     self.strumLine = StrumLine:new(4) --- @type subpar.game.StrumLine
     self.strumLine.position:set(comet.getDesiredWidth() / 2, comet.getDesiredHeight() * 0.85)
     self.strumLine.notesToSpawn = self.currentChart.notes
-    self.strumLine.botplay = true
     self.camera:addChild(self.strumLine)
 
     self.scoreLabel = Label:new() --- @type comet.gfx.Label
@@ -101,8 +100,19 @@ function GameplayScreen:enter()
     end
     self.ratingDisplay = Image:new(self.ratingTextures[ratingList[1]]) --- @type comet.gfx.Image
     self.ratingDisplay:screenCenter()
+    self.ratingDisplay.position.y = self.ratingDisplay.position.y - 20
     self.ratingDisplay.alpha = 0.0
     self.camera:addChild(self.ratingDisplay)
+
+    self.msDisplayLabel = Label:new()
+    self.msDisplayLabel.position:set(20, comet.getDesiredHeight() - 60)
+    self.msDisplayLabel:setFont(Assets.getSkinFont("fonts/francois_one"))
+    self.msDisplayLabel:setSize(24)
+    self.msDisplayLabel.text = "0ms"
+    self.msDisplayLabel:screenCenter()
+    self.msDisplayLabel.position.y = self.msDisplayLabel.position.y + 20
+    self.msDisplayLabel.alpha = 0.0
+    self.camera:addChild(self.msDisplayLabel)
 end
 
 function GameplayScreen:getScore()
@@ -127,20 +137,33 @@ end
 
 function GameplayScreen:showHitInfo(rating, diff)
     self.ratingDisplay:loadTexture(self.ratingTextures[rating])
-    self.ratingDisplay:screenCenter()
     self.ratingDisplay.alpha = 1
 
-    Tween.cancelTweensOf(self.ratingDisplay)
-    Tween.cancelTweensOf(self.ratingDisplay.scale)
-    self.ratingDisplay.scale:set(1.075, 1.075)
+    local objectsToAnimate = {self.ratingDisplay}
+    if diff then
+        self.msDisplayLabel.text = string.format("%dms", diff)
+        self.msDisplayLabel.alpha = 1
+        table.insert(objectsToAnimate, self.msDisplayLabel)
+    else
+        Tween.cancelTweensOf(self.msDisplayLabel)
+        Tween.cancelTweensOf(self.msDisplayLabel.scale)
+        self.msDisplayLabel.alpha = 0.0
+    end
+    for i = 1, #objectsToAnimate do
+        local object = objectsToAnimate[i]
 
-    local t = Tween:new() --- @type comet.gfx.Tween
-    t:target({target = self.ratingDisplay.scale, properties = {x = 1, y = 1}})
-    t:start({duration = 0.25, ease = "outBack"})
+        Tween.cancelTweensOf(object)
+        Tween.cancelTweensOf(object.scale)
+        object.scale:set(1.075, 1.075)
 
-    local t = Tween:new() --- @type comet.gfx.Tween
-    t:target({target = self.ratingDisplay, properties = {alpha = 0}})
-    t:start({delay = 0.5, duration = 0.15})
+        local t = Tween:new() --- @type comet.gfx.Tween
+        t:target({target = object.scale, properties = {x = 1, y = 1}})
+        t:start({duration = 0.25, ease = "outBack"})
+
+        local t = Tween:new() --- @type comet.gfx.Tween
+        t:target({target = object, properties = {alpha = 0}})
+        t:start({delay = 0.5, duration = 0.15})
+    end
 end
 
 function GameplayScreen:update(dt)
