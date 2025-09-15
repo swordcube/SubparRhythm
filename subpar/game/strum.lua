@@ -19,13 +19,13 @@ function Strum:__init__(skin, keyCount, lane)
     local config = Assets.getSkinConfig(Settings.Game.Skin)["Notes" .. keyCount .. "K"]
     self.scale:set(config.Scale, config.Scale)
     
-    self.strumTexture = comet.gfx:get(Assets.getSkinImage("game/notes/" .. keyCount .. "k/" .. config.Strums:split(",")[lane]:trim())) --- @type comet.gfx.Texture
+    self.strumTexture = comet.gfx:getTexture(Assets.getSkinImage("game/notes/" .. keyCount .. "k/" .. config.Strums:split(",")[lane]:trim())) --- @type comet.gfx.Texture
     self.strumTexture:reference()
     
-    self.pressTexture = comet.gfx:get(Assets.getSkinImage("game/notes/" .. keyCount .. "k/" .. config.PressStrums:split(",")[lane]:trim())) --- @type comet.gfx.Texture
+    self.pressTexture = comet.gfx:getTexture(Assets.getSkinImage("game/notes/" .. keyCount .. "k/" .. config.PressStrums:split(",")[lane]:trim())) --- @type comet.gfx.Texture
     self.pressTexture:reference()
 
-    self.hitTexture = comet.gfx:get(Assets.getSkinImage("game/notes/" .. keyCount .. "k/" .. config.HitStrums:split(",")[lane]:trim())) --- @type comet.gfx.Texture
+    self.hitTexture = comet.gfx:getTexture(Assets.getSkinImage("game/notes/" .. keyCount .. "k/" .. config.HitStrums:split(",")[lane]:trim())) --- @type comet.gfx.Texture
     self.hitTexture:reference()
 
     self:loadTexture(self.strumTexture)

@@ -14,7 +14,7 @@ function Note:__init__(skin, keyCount, time, lane, type)
         SLog.warn("Sustains aren't handled yet, i'm lazy!")
     end
     local config = Assets.getSkinConfig(Settings.Game.Skin)["Notes" .. keyCount .. "K"]
-    local tex = comet.gfx:get(Assets.getSkinImage("game/notes/" .. keyCount .. "k/" .. config.Notes:split(",")[lane]:trim())) --- @type comet.gfx.Texture
+    local tex = comet.gfx:getTexture(Assets.getSkinImage("game/notes/" .. keyCount .. "k/" .. config.Notes:split(",")[lane]:trim())) --- @type comet.gfx.Texture
     self:loadTexture(tex)
 end
 

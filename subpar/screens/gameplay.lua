@@ -95,7 +95,7 @@ function GameplayScreen:enter()
     self.ratingTextures = {} --- @type comet.gfx.Texture[]
 
     for _, rating in ipairs(ratingList) do
-        self.ratingTextures[rating] = comet.gfx:get(Assets.getSkinImage("game/ratings/" .. rating))
+        self.ratingTextures[rating] = comet.gfx:getTexture(Assets.getSkinImage("game/ratings/" .. rating))
         self.ratingTextures[rating]:reference()
     end
     self.ratingDisplay = Image:new(self.ratingTextures[ratingList[1]]) --- @type comet.gfx.Image

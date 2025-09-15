@@ -9,7 +9,7 @@ function NoteGroup:__init__(x, y, skin, keyCount)
     
     local config = Assets.getSkinConfig(skin)["Notes" .. keyCount .. "K"]
     for i = 1, keyCount do
-        local tex = comet.gfx:get(Assets.getSkinImage("game/notes/" .. keyCount .. "k/" .. config.Notes:split(",")[i]:trim())) --- @type comet.gfx.Texture
+        local tex = comet.gfx:getTexture(Assets.getSkinImage("game/notes/" .. keyCount .. "k/" .. config.Notes:split(",")[i]:trim())) --- @type comet.gfx.Texture
         tex:reference()
         table.insert(self.noteTextures, tex)
     end
