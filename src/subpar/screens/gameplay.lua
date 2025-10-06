@@ -1,7 +1,7 @@
 local Image = cometreq("gfx.image") --- @type comet.gfx.Image
 local Rectangle = cometreq("gfx.rectangle") --- @type comet.gfx.Rectangle
 
-local StrumLine = require("subpar.game.strumline") --- @type subpar.game.StrumLine
+local StrumLine = srcreq("subpar.game.strumline") --- @type subpar.game.StrumLine
 
 --- @class subpar.screens.GameplayScreen : comet.core.Screen
 local GameplayScreen, super = Screen:subclass("GameplayScreen")
@@ -25,7 +25,7 @@ function GameplayScreen:enter()
 
     comet.mixer.music:setSource(Assets.getSongAudio(self.currentSong))
     comet.mixer.music.onComplete:connect(function(_)
-        self:switchTo(require("subpar.screens.songselect"):new())
+        self:switchTo(srcreq("subpar.screens.songselect"):new())
     end)
 
     -- TODO: allow for more keys than just 4k
@@ -51,7 +51,7 @@ function GameplayScreen:enter()
     self.underlay = Rectangle:new() --- @type comet.gfx.Rectangle
     self.underlay:setTint(Color.BLACK)
     self.underlay:getTint().a = 0.5
-    self.underlay:setSize((skinConfig.Notes4K.Spacing * 4) + 30, comet.getDesiredHeight())
+    self.underlay.size:set((skinConfig.Notes4K.Spacing * 4) + 30, comet.getDesiredHeight())
     self.underlay.position:set(comet.getDesiredWidth() / 2, comet.getDesiredHeight() / 2)
     self.camera:addChild(self.underlay)
     

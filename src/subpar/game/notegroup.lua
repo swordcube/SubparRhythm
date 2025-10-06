@@ -47,8 +47,8 @@ function NoteGroup:updateNote(note)
     local ct = Conductor.instance:getCurrentTime()
     local ph = Conductor.instance:getCurrentPlayhead()
 
-    note.position.x = note:getWidth() * 0.5
-    note.position.y = ((ph - note.time) / strumLine.scrollSpeed) + (note:getHeight() * 0.5)
+    note.position.x = 0.0
+    note.position.y = (ph - note.time) / strumLine.scrollSpeed
 
     if strumLine.botplay and note.time <= ph then
         self:hitNote(note)
@@ -60,10 +60,11 @@ end
 
 --- @param note subpar.game.Note
 function NoteGroup:removeNote(note)
-    table.insert(self.toRemove, note)
+    self:removeChild(note)
 end
 
 function NoteGroup:_update(dt)
+    self:update(dt)
     for i = 1, #self.children do
         local object = self.children[i] --- @type comet.core.Object
         if object then
@@ -71,13 +72,7 @@ function NoteGroup:_update(dt)
             object:_update(dt)
         end
     end
-    for i = 1, #self.toRemove do
-        local note = self.toRemove[i] --- @type subpar.game.Note
-        note:destroy()
-        self:removeChild(note)
-    end
-    self.toRemove = {}
-    self:update(dt)
+    self:postUpdate(dt)
 end
 
 function NoteGroup:destroy()

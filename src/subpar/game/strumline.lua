@@ -1,5 +1,5 @@
-local Strum = require("subpar.game.strum") --- @type subpar.game.Strum
-local Note = require("subpar.game.note") --- @type subpar.game.Note
+local Strum = srcreq("subpar.game.strum") --- @type subpar.game.Strum
+local Note = srcreq("subpar.game.note") --- @type subpar.game.Note
 
 local function sortNote(a, b)
     return a.time < b.time

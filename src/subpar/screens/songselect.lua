@@ -13,7 +13,7 @@ function SongSelectScreen:enter()
     self.menuBarBG.centered = false
     self.menuBarBG:setTint(Color.BLACK)
     self.menuBarBG:getTint().a = 0.5
-    self.menuBarBG:setSize(comet.getDesiredWidth(), 40)
+    self.menuBarBG.size:set(comet.getDesiredWidth(), 40)
     self.menuBarBG.position:set(0, comet.getDesiredHeight() - self.menuBarBG:getHeight())
     self:addChild(self.menuBarBG)
 end
@@ -27,7 +27,7 @@ function SongSelectScreen:input(e)
     if e.type == "key" then
         local e = e --- @type comet.input.InputKeyEvent
         if e.key == "return" then
-            ScreenManager.switchTo(require("subpar.screens.gameplay"):new("Splooble", "Expert"))
+            ScreenManager.switchTo(srcreq("subpar.screens.gameplay"):new("Splooble", "Expert"))
         end
     end
 end

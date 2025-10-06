@@ -1,4 +1,4 @@
-local NoteGroup = require("subpar.game.notegroup") --- @type subpar.game.NoteGroup
+local NoteGroup = srcreq("subpar.game.notegroup") --- @type subpar.game.NoteGroup
 
 --- @class subpar.game.Strum : comet.gfx.Image
 local Strum, super = Image:subclass("Strum")

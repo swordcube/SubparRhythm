@@ -269,6 +269,9 @@ function Conductor:getTimeAtMeasure(measure)
 end
 
 local function recursiveStep(object, step)
+    if not object or not object.children then
+        return
+    end
     local children = object.children
     for i = 1, #children do
         local child = children[i]
@@ -280,6 +283,9 @@ local function recursiveStep(object, step)
 end
 
 local function recursiveBeat(object, beat)
+    if not object or not object.children then
+        return
+    end
     local children = object.children
     for i = 1, #children do
         local child = children[i]
@@ -291,6 +297,9 @@ local function recursiveBeat(object, beat)
 end
 
 local function recursiveMeasure(object, measure)
+    if not object or not object.children then
+        return
+    end
     local children = object.children
     for i = 1, #children do
         local child = children[i]
